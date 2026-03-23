@@ -34,8 +34,8 @@ const Signup = () => {
             } else {
                 alert(data.message || 'Google signup failed');
             }
-        } catch {
-            alert('Google signup failed. Try again.');
+        } catch (err) {
+            alert(err?.message || 'Google signup failed. Try again.');
         }
     };
 
@@ -57,8 +57,8 @@ const Signup = () => {
             } else {
                 alert(data.message || 'Signup failed');
             }
-        } catch {
-            alert('Signup failed. Please try again.');
+        } catch (err) {
+            alert('Signup failed. Please try again. Error: ' + (err?.message || err));
         } finally {
             setLoading(false);
         }
