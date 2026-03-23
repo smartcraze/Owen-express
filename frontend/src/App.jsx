@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { FaShoppingCart, FaSearch, FaUtensils, FaEnvelope, FaPhone } from 'react-icons/fa';
+import { API_URL } from './config';
 import Home from './pages/Home';
 import Showcase from './pages/Showcase';
 import Search from './pages/Search';
@@ -80,7 +81,7 @@ function App() {
             const user = localStorage.getItem('user');
             if (token && user && user !== 'undefined' && user !== 'null') {
                 try {
-                    const res = await fetch('http://localhost:5000/api/users/verify', {
+                    const res = await fetch(`${API_URL}/api/users/verify`, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
                     if (res.ok) {
@@ -111,7 +112,7 @@ function App() {
     };
 
     if (loading) return (
-        <div className="flex justify-center items-center min-h-screen" style={{ backgroundColor: '#fefae8' }}>
+        <div className="flex justify-center items-center min-h-screen" style={{ backgroundColor: '#fff5f0' }}>
             <div className="text-center">
                 <div className="w-16 h-16 rounded-2xl bg-red-600 flex items-center justify-center mx-auto mb-4 shadow-xl animate-bounce">
                     <FaUtensils className="text-white text-xl" />
@@ -123,7 +124,7 @@ function App() {
 
     return (
         <Router>
-            <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#fefae8' }}>
+            <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#fff5f0' }}>
                 <Header cartCount={cart.length} isLoggedIn={isLoggedIn} onLogout={handleLogout} />
                 <main className="flex-1 p-8 max-w-7xl mx-auto w-full">
                     <Routes>
