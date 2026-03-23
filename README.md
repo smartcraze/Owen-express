@@ -1,104 +1,116 @@
-# Owen Express - Food Delivery Platform
+<div align="center">
 
-A full-stack MERN food delivery application for single restaurant management with direct customer ordering.
+# 🍽️ Owen Express
 
-🌐 **Live Demo**: [owen-express-food.vercel.app](https://owen-express-food.vercel.app)
-🔧 **Backend API**: [owen-express-backend.onrender.com](https://owen-express-backend.onrender.com)
+### A full-stack food delivery platform for single restaurant management
 
-## 🚀 Features
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-owen--express--food.vercel.app-brightgreen?style=for-the-badge&logo=vercel)](https://owen-express-food.vercel.app)
+[![Backend API](https://img.shields.io/badge/Backend%20API-Render-blue?style=for-the-badge&logo=render)](https://owen-express-backend.onrender.com)
+[![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 
-### Customer Features
-- User authentication (Login/Signup with bcrypt password hashing)
+![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react)
+![Node.js](https://img.shields.io/badge/Node.js-Express-339933?style=flat-square&logo=node.js)
+![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=flat-square&logo=mongodb)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=flat-square&logo=tailwind-css)
+![Cloudinary](https://img.shields.io/badge/Cloudinary-Image%20Storage-3448C5?style=flat-square&logo=cloudinary)
+
+</div>
+
+---
+
+## 📌 Overview
+
+Owen Express is a production-ready MERN stack food delivery application built for single restaurant management. Customers can browse the menu, add items to cart, and place orders with multiple payment options. Admins get a full dashboard to manage menu items with real-time image uploads via Cloudinary.
+
+---
+
+## ✨ Features
+
+### 👤 Customer
+- Email/password authentication with bcryptjs hashing
 - Google OAuth login via Firebase
-- Browse menu with veg/non-veg toggle filter
-- Interactive ingredient display (3D flip cards)
-- Search functionality
+- Browse full menu with veg / non-veg toggle filter
+- 3D flip cards showing item ingredients
+- Search across menu items
 - Shopping cart with localStorage persistence
-- Order placement with multiple payment options (UPI/Card/COD)
-- Order history with rating and review system
-- Responsive design for all screen sizes
+- Order placement — UPI, Credit Card, or Cash on Delivery
+- Order history with star rating and review system
+- Fully responsive on all screen sizes
 
-### Admin Features
-- Admin panel for menu management
-- Add/Edit/Delete menu items
-- Mark items as "Chef's Special"
-- Image upload for food items
-- Veg/Non-veg classification
-- Real-time menu updates
+### 🔧 Admin
+- Secure admin panel (role-based access)
+- Add, edit, and delete menu items
+- Upload food images — stored permanently on Cloudinary
+- Mark items as Chef's Special
+- Veg / Non-veg classification
+- Live stats — total items, veg count, non-veg count, specials count
+- Inline success/error feedback (no alerts)
+
+---
 
 ## 🛠️ Tech Stack
 
-**Frontend:**
-- React.js 18
-- React Router v6
-- Tailwind CSS
-- React Icons
-- Firebase (Google OAuth)
-- Vite
+| Layer | Technology | Purpose |
+|---|---|---|
+| **Frontend** | React.js 18 | UI framework |
+| | React Router v6 | Client-side routing |
+| | Tailwind CSS | Utility-first styling |
+| | Vite | Build tool & dev server |
+| | React Icons | Icon library |
+| | Firebase | Google OAuth |
+| **Backend** | Node.js | Runtime environment |
+| | Express.js 5 | REST API framework |
+| | Mongoose | MongoDB ODM |
+| | JWT | Token-based authentication |
+| | Bcryptjs | Password hashing (10 salt rounds) |
+| | Multer | Multipart form handling |
+| | multer-storage-cloudinary | Cloudinary multer adapter |
+| **Storage** | MongoDB Atlas | Database (M0 free cluster) |
+| | Cloudinary | Persistent image storage & CDN |
+| **Deployment** | Vercel | Frontend hosting |
+| | Render | Backend hosting |
 
-**Backend:**
-- Node.js
-- Express.js 5
-- MongoDB Atlas
-- Mongoose
-- JWT Authentication
-- Bcryptjs (Password Hashing)
-- Multer (File Upload)
+---
 
-**Deployment:**
-- Frontend: Vercel
-- Backend: Render
-- Database: MongoDB Atlas
+## 🌐 API Reference
 
-## 📦 Local Installation
+### Users
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/users/signup` | Register new user |
+| POST | `/api/users/login` | Login with email & password |
+| POST | `/api/users/google` | Google OAuth login |
+| GET | `/api/users/verify` | Verify JWT token |
 
-### Prerequisites
-- Node.js (v14 or higher)
-- MongoDB (local or Atlas)
-- npm or yarn
+### Menu Items
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/items` | Get all menu items |
+| POST | `/api/items` | Create item *(Admin)* |
+| PUT | `/api/items/:id` | Update item *(Admin)* |
+| DELETE | `/api/items/:id` | Delete item *(Admin)* |
 
-### Backend Setup
-```bash
-cd backend
-npm install
-```
+### Orders
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/orders/payment` | Place an order |
+| GET | `/api/orders/user/:email` | Get orders by user |
+| PUT | `/api/orders/:id/rate` | Submit rating & review |
 
-Create `.env` file in backend folder:
-```env
-MONGO_URI=mongodb://127.0.0.1:27017/foodshop
-JWT_SECRET=your_jwt_secret_key_here
-PORT=5000
-```
-
-Start backend server:
-```bash
-npm start
-```
-
-### Frontend Setup
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Frontend runs on: `http://localhost:5173`
-Backend runs on: `http://localhost:5000`
-
-## 👤 Default Admin Credentials
-```
-Email: admin@gmail.com
-Password: admin123
-```
+---
 
 ## 📁 Project Structure
+
 ```
 owen-express/
 ├── backend/
 │   ├── controllers/
-│   │   ├── itemController.js
-│   │   ├── orderController.js
-│   │   └── userController.js
+│   │   ├── itemController.js     # Menu CRUD + Cloudinary upload
+│   │   ├── orderController.js    # Order placement & rating
+│   │   └── userController.js     # Auth, JWT, Google OAuth
+│   ├── middleware/
+│   │   ├── auth.js               # JWT verification middleware
+│   │   └── upload.js             # Multer + Cloudinary storage
 │   ├── models/
 │   │   ├── Item.js
 │   │   ├── Order.js
@@ -107,142 +119,134 @@ owen-express/
 │   │   ├── itemRoutes.js
 │   │   ├── orderRoutes.js
 │   │   └── userRoutes.js
-│   ├── middleware/
-│   │   ├── auth.js
-│   │   └── upload.js
-│   ├── uploads/
-│   ├── .env
 │   ├── app.js
 │   └── package.json
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── ItemList.jsx
-│   │   │   ├── OrderForm.jsx
-│   │   │   ├── Payment.jsx
-│   │   │   └── ProtectedRoute.jsx
-│   │   ├── pages/
-│   │   │   ├── Admin.jsx
-│   │   │   ├── Home.jsx
-│   │   │   ├── Login.jsx
-│   │   │   ├── Signup.jsx
-│   │   │   ├── Showcase.jsx
-│   │   │   ├── Search.jsx
-│   │   │   └── OrderHistory.jsx
-│   │   ├── App.jsx
-│   │   ├── config.js
-│   │   ├── firebase.js
-│   │   └── main.jsx
-│   ├── public/
-│   ├── .env
-│   ├── .env.production
-│   ├── vercel.json
-│   ├── package.json
-│   └── vite.config.ts
-└── README.md
+│
+└── frontend/
+    ├── src/
+    │   ├── components/
+    │   │   ├── ItemList.jsx       # 3D flip card menu grid
+    │   │   ├── OrderForm.jsx      # Cart & order summary
+    │   │   ├── Payment.jsx        # Payment method selection
+    │   │   └── ProtectedRoute.jsx # Auth guard
+    │   ├── pages/
+    │   │   ├── Admin.jsx          # Admin dashboard
+    │   │   ├── Home.jsx           # Full menu page
+    │   │   ├── Login.jsx
+    │   │   ├── Signup.jsx
+    │   │   ├── Showcase.jsx       # Landing page
+    │   │   ├── Search.jsx
+    │   │   └── OrderHistory.jsx
+    │   ├── App.jsx
+    │   ├── config.js              # API_URL config
+    │   └── firebase.js
+    ├── .env
+    ├── .env.production
+    ├── vercel.json
+    └── vite.config.ts
 ```
 
-## 🎯 Key Features Explained
+---
 
-### Password Security
-- All passwords hashed using bcryptjs (10 salt rounds)
-- Secure JWT token-based authentication (7 day expiry)
-- Protected routes for authenticated users
+## ⚙️ Local Setup
 
-### Google OAuth
-- Firebase Google sign-in on Login and Signup pages
-- Auto-creates user account on first Google login
+### Prerequisites
+- Node.js v14+
+- MongoDB (local or Atlas)
+- Cloudinary account
 
-### Cart Management
-- Prevents duplicate items
-- Persists in localStorage
-- Clears on logout
+### 1. Clone the repo
+```bash
+git clone https://github.com/vipulpatial82/Owen-express.git
+cd Owen-express
+```
 
-### Order System
-- Multiple payment methods (UPI, Credit Card, COD)
-- Order history per user
-- Star rating and review system
+### 2. Backend
+```bash
+cd backend
+npm install
+```
 
-### Admin Panel
-- Full CRUD operations on menu items
-- Image upload (stored on backend server)
-- Chef's special marking
-- Veg/Non-veg classification
-- Inline success/error feedback
+Create `backend/.env`:
+```env
+MONGO_URI=mongodb://127.0.0.1:27017/foodshop
+JWT_SECRET=your_jwt_secret_here
+PORT=5000
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+```
 
-## 🌐 API Endpoints
+```bash
+npm start
+```
 
-### User Routes
-- `POST /api/users/signup` - Register new user
-- `POST /api/users/login` - User login
-- `POST /api/users/google` - Google OAuth login
-- `GET /api/users/verify` - Verify JWT token
+### 3. Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-### Item Routes
-- `GET /api/items` - Get all items
-- `POST /api/items` - Create item (Admin)
-- `PUT /api/items/:id` - Update item (Admin)
-- `DELETE /api/items/:id` - Delete item (Admin)
+| Service | URL |
+|---|---|
+| Frontend | http://localhost:5173 |
+| Backend | http://localhost:5000 |
 
-### Order Routes
-- `POST /api/orders/payment` - Place order
-- `GET /api/orders/user/:email` - Get user orders
-- `PUT /api/orders/:id/rate` - Rate order
-
-## 🎨 Color Scheme
-- Primary: Orange (#ea580c) to Red (#dc2626) gradient
-- Background: #fff5f0
-- Success: Green (#16a34a)
-- Error: Red (#dc2626)
-
-## 🔒 Security Features
-- Bcryptjs password hashing
-- JWT authentication
-- Protected API routes
-- Input validation
-- CORS configured for production domains
-
-## 📱 Responsive Design
-- Mobile-first approach
-- Tailwind CSS responsive utilities
-- Works on all screen sizes
+---
 
 ## 🚀 Deployment
 
-### Frontend (Vercel)
-- Root Directory: `frontend`
-- Build Command: `npm run build`
-- Output Directory: `dist`
-- Framework: Vite
-- Environment Variable: `VITE_API_URL=https://owen-express-backend.onrender.com`
+### Frontend → Vercel
+| Setting | Value |
+|---|---|
+| Root Directory | `frontend` |
+| Build Command | `npm run build` |
+| Output Directory | `dist` |
+| Framework | Vite |
+| Env Variable | `VITE_API_URL=https://owen-express-backend.onrender.com` |
 
-### Backend (Render)
-- Root Directory: `backend`
-- Build Command: `npm install`
-- Start Command: `npm start`
-- Environment Variables: `MONGO_URI`, `JWT_SECRET`, `PORT`
+### Backend → Render
+| Setting | Value |
+|---|---|
+| Root Directory | `backend` |
+| Build Command | `npm install` |
+| Start Command | `npm start` |
+| Env Variables | `MONGO_URI`, `JWT_SECRET`, `PORT`, `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` |
 
-### Database (MongoDB Atlas)
+### Database → MongoDB Atlas
 - Free M0 cluster
-- Network Access: `0.0.0.0/0` (allow all IPs for Render compatibility)
-
-## 🤝 Contributing
-Pull requests are welcome. For major changes, please open an issue first.
-
-## 📄 License
-MIT
-
-## 👨‍💻 Author
-**Vipul Patial**
-- GitHub: [vipulpatial82](https://github.com/vipulpatial82)
-- Repo: [Owen-express](https://github.com/vipulpatial82/Owen-express)
-
-## 🙏 Acknowledgments
-- React Icons
-- Tailwind CSS
-- MongoDB Atlas
-- Firebase
-- Render
-- Vercel
+- Network Access: `0.0.0.0/0` (required for Render)
 
 ---
+
+## 🔒 Security
+
+- Passwords hashed with bcryptjs (10 salt rounds)
+- JWT authentication with 7-day token expiry
+- Protected API routes via auth middleware
+- CORS restricted to production domains
+- Role-based access control (admin vs customer)
+
+---
+
+## 👤 Default Admin
+
+```
+Email:    admin@gmail.com
+Password: admin123
+```
+
+---
+
+## 👨‍💻 Author
+
+**Vipul Patial**
+- GitHub: [@vipulpatial82](https://github.com/vipulpatial82)
+- Repo: [Owen-express](https://github.com/vipulpatial82/Owen-express)
+
+---
+
+## 📄 License
+
+MIT © Vipul Patial
