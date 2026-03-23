@@ -5,15 +5,20 @@ const bcrypt = require('bcryptjs');
 exports.googleAuth = async (req, res) => {
     try {
         const { name, email } = req.body;
-        if (!email) return res.status(400).json({ message: 'Email is required' });
+        if (!name || !email) return res.status(400).json({ message: 'Name and email are required' });
         let user = await User.findOne({ email: email.toLowerCase() });
         if (!user) {
-            user = new User({ name: name || 'Google User', email: email.toLowerCase(), password: 'google-oauth', isGoogleUser: true });
-            await user.save();
+            user = await User.create({
+                name: name || 'Google User',
+                email: email.toLowerCase(),
+                password: 'google-oauth',
+                isGoogleUser: true
+            });
         }
-        res.json({ token: generateToken(user._id), user: { name: user.name, email: user.email, isAdmin: false } });
+        const token = generateToken(user._id);
+        res.json({ token, user: { name: user.name, email: user.email, isAdmin: false } });
     } catch (error) {
-        res.status(500).json({ message: 'Google authentication failed' });
+        res.status(500).json({ message: 'Google authentication failed', error: error.message });
     }
 };
 
@@ -29,7 +34,7 @@ exports.signup = async (req, res) => {
         await user.save();
         res.status(201).json({ token: generateToken(user._id), user: { name, email: user.email } });
     } catch (error) {
-        res.status(500).json({ message: 'Signup failed' });
+        res.status(500).json({ message: 'Signup failed', error: error.message });
     }
 };
 
