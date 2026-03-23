@@ -2,9 +2,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const fs = require('fs');
+const path = require('path');
 require('dotenv').config();
 
-if (!fs.existsSync('uploads')) fs.mkdirSync('uploads');
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
 const itemRoutes = require('./routes/itemRoutes');
 const orderRoutes = require('./routes/orderRoutes');
@@ -28,7 +30,7 @@ mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('MongoDB Connected'))
     .catch(err => console.error('MongoDB connection error:', err.message));
 
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static(uploadDir));
 app.use('/api/items', itemRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/users', userRoutes);
