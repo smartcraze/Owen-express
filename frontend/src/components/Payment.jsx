@@ -25,15 +25,16 @@ const Payment = ({ clearCart }) => {
     const handlePay = async () => {
         const userStr = localStorage.getItem('user');
         let user = null;
-        
         try {
-            if (userStr) {
-                user = JSON.parse(userStr);
-            }
-        } catch (error) {
-            console.error('Error parsing user data:', error);
+            if (userStr) user = JSON.parse(userStr);
+        } catch { user = null; }
+
+        if (!user?.email) {
+            alert('User session expired. Please login again.');
+            navigate('/login');
+            return;
         }
-        
+
         try {
             const res = await fetch(`${API_URL}/api/orders/payment`, {
                 method: 'POST',
@@ -41,7 +42,8 @@ const Payment = ({ clearCart }) => {
                 body: JSON.stringify({
                     name: address.name,
                     address: address.address,
-                    phone: user?.email || address.phone,
+                    phone: address.phone,
+                    email: user?.email || '',
                     cart,
                     total,
                     paymentMethod: selected

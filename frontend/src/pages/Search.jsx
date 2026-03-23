@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FaSearch } from 'react-icons/fa';
 import ItemList from '../components/ItemList';
+import { API_URL } from '../config';
 
 const Search = ({ cart, setCart }) => {
     const navigate = useNavigate();
@@ -11,7 +12,7 @@ const Search = ({ cart, setCart }) => {
     const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
 
     useEffect(() => {
-        fetch('http://localhost:5000/api/items')
+        fetch(`${API_URL}/api/items`)
             .then(res => res.json())
             .then(setMenuItems)
             .catch(console.error);
@@ -36,7 +37,9 @@ const Search = ({ cart, setCart }) => {
         }
     };
 
-    const addToCart = (item) => setCart([...cart, item]);
+    const addToCart = (item) => {
+        if (!cart.find(c => c._id === item._id)) setCart([...cart, item]);
+    };
 
     return (
         <div className="min-h-[70vh]">

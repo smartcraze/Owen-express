@@ -1,16 +1,15 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
-    name: String,
-    address: String,
-    phone: String,
-    email: String,
-    cart: Array,
-    total: Number,
-    paymentMethod: String,
+    name: { type: String, required: true },
+    address: { type: String, required: true },
+    phone: { type: String, required: true },
+    email: { type: String, required: true, lowercase: true, trim: true },
+    cart: { type: Array, required: true },
+    total: { type: Number, required: true },
+    paymentMethod: { type: String, enum: ['upi', 'credit', 'cod'], default: 'cod' },
     rating: { type: Number, min: 1, max: 5, default: null },
-    review: { type: String, default: '' },
-    createdAt: { type: Date, default: Date.now }
-});
+    review: { type: String, default: '' }
+}, { timestamps: true });
 
 module.exports = mongoose.model('Order', orderSchema);

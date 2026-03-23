@@ -13,10 +13,8 @@ const OrderHistory = () => {
 
     useEffect(() => {
         const userStr = localStorage.getItem('user');
-        console.log('User string from localStorage:', userStr);
         
         if (!userStr || userStr === 'undefined' || userStr === 'null') {
-            console.log('No valid user found, redirecting to login');
             localStorage.removeItem('user');
             localStorage.removeItem('token');
             return navigate('/login');
@@ -24,32 +22,21 @@ const OrderHistory = () => {
         
         try {
             const user = JSON.parse(userStr);
-            console.log('Parsed user:', user);
             
             if (!user || !user.email) {
-                console.log('User or email missing, redirecting to login');
                 localStorage.removeItem('user');
                 localStorage.removeItem('token');
                 return navigate('/login');
             }
 
-            console.log('Fetching orders for email:', user.email);
             fetch(`${API_URL}/api/orders/user/${user.email}`)
-                .then(res => {
-                    console.log('Response status:', res.status);
-                    return res.json();
-                })
+                .then(res => res.json())
                 .then(data => {
-                    console.log('Orders received:', data);
                     setOrders(data);
                     setLoading(false);
                 })
-                .catch(err => {
-                    console.error('Error fetching orders:', err);
-                    setLoading(false);
-                });
-        } catch (error) {
-            console.error('Error parsing user data:', error);
+                .catch(() => setLoading(false));
+        } catch {
             localStorage.removeItem('user');
             localStorage.removeItem('token');
             navigate('/login');

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaStar, FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
+import { FaStar, FaEdit, FaTrash, FaPlus, FaLeaf, FaDrumstickBite } from 'react-icons/fa';
 import { API_URL } from '../config';
 
 const Admin = () => {
@@ -16,7 +16,13 @@ const Admin = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem('user'));
+        let user = null;
+        try {
+            user = JSON.parse(localStorage.getItem('user'));
+        } catch {
+            navigate('/');
+            return;
+        }
         if (!user || !user.isAdmin) {
             navigate('/');
             return;
@@ -28,7 +34,7 @@ const Admin = () => {
         fetch(`${API_URL}/api/items`)
             .then(res => res.json())
             .then(data => setItems(data))
-            .catch(err => console.error(err));
+            .catch(() => alert('Failed to load items'));
     };
 
     const handleSubmit = async (e) => {
@@ -157,38 +163,20 @@ const Admin = () => {
                                 required
                                 className="p-4 border-2 border-gray-200 rounded-xl text-base min-h-[100px] resize-y focus:border-orange-500 focus:outline-none transition-colors"
                             />
-                            <div className="flex gap-4 items-center p-4 bg-gray-50 rounded-xl">
-                                <label className="font-semibold text-gray-700">Type:</label>
-                                <label className="flex items-center gap-2 cursor-pointer">
-                                    <input
-                                        type="radio"
-                                        value="veg"
-                                        checked={type === 'veg'}
-                                        onChange={(e) => setType(e.target.value)}
-                                        className="w-4 h-4 cursor-pointer"
-                                    />
-                                    <span className="flex items-center gap-1.5 font-semibold">
-                                        <span className="w-5 h-5 border-2 border-green-600 flex items-center justify-center">
-                                            <span className="w-2.5 h-2.5 rounded-full bg-green-600"></span>
-                                        </span>
-                                        <span className="text-green-600">Veg</span>
-                                    </span>
-                                </label>
-                                <label className="flex items-center gap-2 cursor-pointer">
-                                    <input
-                                        type="radio"
-                                        value="non-veg"
-                                        checked={type === 'non-veg'}
-                                        onChange={(e) => setType(e.target.value)}
-                                        className="w-4 h-4 cursor-pointer"
-                                    />
-                                    <span className="flex items-center gap-1.5 font-semibold">
-                                        <span className="w-5 h-5 border-2 border-red-600 flex items-center justify-center">
-                                            <span className="w-2.5 h-2.5 rounded-full bg-red-600"></span>
-                                        </span>
-                                        <span className="text-red-600">Non-Veg</span>
-                                    </span>
-                                </label>
+                            <div className="flex gap-3 items-center p-4 bg-gray-50 rounded-xl">
+                                <span className="font-semibold text-gray-700">Type:</span>
+                                <button type="button" onClick={() => setType('veg')}
+                                    className={`text-xs px-2.5 py-1 rounded-full font-semibold flex items-center gap-1 border transition-all ${
+                                        type === 'veg' ? 'bg-green-200 text-green-700 border-green-300 scale-110' : 'bg-green-100 text-green-700 border-green-200 opacity-60'
+                                    }`}>
+                                    <FaLeaf size={9} /> Veg
+                                </button>
+                                <button type="button" onClick={() => setType('non-veg')}
+                                    className={`text-xs px-2.5 py-1 rounded-full font-semibold flex items-center gap-1 border transition-all ${
+                                        type === 'non-veg' ? 'bg-red-200 text-red-700 border-red-300 scale-110' : 'bg-red-100 text-red-700 border-red-200 opacity-60'
+                                    }`}>
+                                    <FaDrumstickBite size={9} /> Non-Veg
+                                </button>
                             </div>
                             <label className="flex items-center gap-3 p-4 bg-orange-50 rounded-xl cursor-pointer hover:bg-orange-100 transition-colors">
                                 <input
