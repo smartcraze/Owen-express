@@ -2,17 +2,21 @@
 
 A full-stack MERN food delivery application for single restaurant management with direct customer ordering.
 
+🌐 **Live Demo**: [owen-express-food.vercel.app](https://owen-express-food.vercel.app)
+🔧 **Backend API**: [owen-express-backend.onrender.com](https://owen-express-backend.onrender.com)
+
 ## 🚀 Features
 
 ### Customer Features
 - User authentication (Login/Signup with bcrypt password hashing)
-- Browse menu with veg/non-veg filters
+- Google OAuth login via Firebase
+- Browse menu with veg/non-veg toggle filter
 - Interactive ingredient display (3D flip cards)
 - Search functionality
 - Shopping cart with localStorage persistence
 - Order placement with multiple payment options (UPI/Card/COD)
-- Order history with rating system
-- Responsive design
+- Order history with rating and review system
+- Responsive design for all screen sizes
 
 ### Admin Features
 - Admin panel for menu management
@@ -25,29 +29,33 @@ A full-stack MERN food delivery application for single restaurant management wit
 ## 🛠️ Tech Stack
 
 **Frontend:**
-- React.js
-- React Router
+- React.js 18
+- React Router v6
 - Tailwind CSS
 - React Icons
+- Firebase (Google OAuth)
 - Vite
 
 **Backend:**
 - Node.js
-- Express.js
-- MongoDB
+- Express.js 5
+- MongoDB Atlas
 - Mongoose
 - JWT Authentication
-- Bcrypt (Password Hashing)
+- Bcryptjs (Password Hashing)
 - Multer (File Upload)
 
-## 📦 Installation
+**Deployment:**
+- Frontend: Vercel
+- Backend: Render
+- Database: MongoDB Atlas
+
+## 📦 Local Installation
 
 ### Prerequisites
 - Node.js (v14 or higher)
 - MongoDB (local or Atlas)
 - npm or yarn
-
-
 
 ### Backend Setup
 ```bash
@@ -74,8 +82,8 @@ npm install
 npm run dev
 ```
 
-Frontend will run on: `http://localhost:5173`
-Backend will run on: `http://localhost:5000`
+Frontend runs on: `http://localhost:5173`
+Backend runs on: `http://localhost:5000`
 
 ## 👤 Default Admin Credentials
 ```
@@ -100,7 +108,8 @@ owen-express/
 │   │   ├── orderRoutes.js
 │   │   └── userRoutes.js
 │   ├── middleware/
-│   │   └── auth.js
+│   │   ├── auth.js
+│   │   └── upload.js
 │   ├── uploads/
 │   ├── .env
 │   ├── app.js
@@ -121,9 +130,13 @@ owen-express/
 │   │   │   ├── Search.jsx
 │   │   │   └── OrderHistory.jsx
 │   │   ├── App.jsx
+│   │   ├── config.js
+│   │   ├── firebase.js
 │   │   └── main.jsx
 │   ├── public/
-│   │   └── images/
+│   ├── .env
+│   ├── .env.production
+│   ├── vercel.json
 │   ├── package.json
 │   └── vite.config.ts
 └── README.md
@@ -132,9 +145,13 @@ owen-express/
 ## 🎯 Key Features Explained
 
 ### Password Security
-- All passwords are hashed using bcrypt (10 salt rounds)
-- Secure JWT token-based authentication
+- All passwords hashed using bcryptjs (10 salt rounds)
+- Secure JWT token-based authentication (7 day expiry)
 - Protected routes for authenticated users
+
+### Google OAuth
+- Firebase Google sign-in on Login and Signup pages
+- Auto-creates user account on first Google login
 
 ### Cart Management
 - Prevents duplicate items
@@ -142,21 +159,23 @@ owen-express/
 - Clears on logout
 
 ### Order System
-- Multiple payment methods
-- Order tracking
-- Rating and review system
+- Multiple payment methods (UPI, Credit Card, COD)
+- Order history per user
+- Star rating and review system
 
 ### Admin Panel
-- Full CRUD operations
-- Image upload for menu items
+- Full CRUD operations on menu items
+- Image upload (stored on backend server)
 - Chef's special marking
 - Veg/Non-veg classification
+- Inline success/error feedback
 
 ## 🌐 API Endpoints
 
 ### User Routes
 - `POST /api/users/signup` - Register new user
 - `POST /api/users/login` - User login
+- `POST /api/users/google` - Google OAuth login
 - `GET /api/users/verify` - Verify JWT token
 
 ### Item Routes
@@ -177,11 +196,11 @@ owen-express/
 - Error: Red (#dc2626)
 
 ## 🔒 Security Features
-- Bcrypt password hashing
+- Bcryptjs password hashing
 - JWT authentication
 - Protected API routes
 - Input validation
-- CORS enabled
+- CORS configured for production domains
 
 ## 📱 Responsive Design
 - Mobile-first approach
@@ -191,21 +210,21 @@ owen-express/
 ## 🚀 Deployment
 
 ### Frontend (Vercel)
-```bash
-cd frontend
-vercel --prod
-```
+- Root Directory: `frontend`
+- Build Command: `npm run build`
+- Output Directory: `dist`
+- Framework: Vite
+- Environment Variable: `VITE_API_URL=https://owen-express-backend.onrender.com`
 
-### Backend (Render/Railway)
-1. Push to GitHub
-2. Connect to Render/Railway
-3. Add environment variables
-4. Deploy
+### Backend (Render)
+- Root Directory: `backend`
+- Build Command: `npm install`
+- Start Command: `npm start`
+- Environment Variables: `MONGO_URI`, `JWT_SECRET`, `PORT`
 
 ### Database (MongoDB Atlas)
-1. Create free cluster
-2. Get connection string
-3. Update MONGO_URI in .env
+- Free M0 cluster
+- Network Access: `0.0.0.0/0` (allow all IPs for Render compatibility)
 
 ## 🤝 Contributing
 Pull requests are welcome. For major changes, please open an issue first.
@@ -214,13 +233,16 @@ Pull requests are welcome. For major changes, please open an issue first.
 MIT
 
 ## 👨‍💻 Author
-**Your Name**
-- GitHub[vipul patial](https://github.com/vipulpatial82)
+**Vipul Patial**
+- GitHub: [vipulpatial82](https://github.com/vipulpatial82)
+- Repo: [Owen-express](https://github.com/vipulpatial82/Owen-express)
 
 ## 🙏 Acknowledgments
 - React Icons
 - Tailwind CSS
-- MongoDB
-- Express.js
+- MongoDB Atlas
+- Firebase
+- Render
+- Vercel
 
 ---
