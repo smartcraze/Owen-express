@@ -104,8 +104,11 @@ const Showcase = ({ isLoggedIn }) => {
                                     <div className="absolute w-full h-full bg-white rounded-xl overflow-hidden shadow-lg hover:-translate-y-2 hover:shadow-2xl transition-all cursor-pointer border border-yellow-100"
                                         style={{ backfaceVisibility: 'hidden' }}
                                         onClick={() => toggleFlip(item._id)}>
-                                        <div className="relative w-full h-52 overflow-hidden">
-                                            <div className="w-full h-full bg-cover bg-center" style={{ backgroundImage: `url('${item.image}')` }} />
+                                        <div className="relative w-full h-52 overflow-hidden bg-gray-100">
+                                            {item.image
+                                                ? <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                                : <div className="w-full h-full flex items-center justify-center text-gray-300 text-sm">No Image</div>
+                                            }
                                             <div className="absolute top-3 right-3 flex gap-2">
                                                 {item.isChefSpecial && (
                                                     <span className="bg-orange-500 text-white text-xs px-2.5 py-1 rounded-full font-bold flex items-center gap-1">
