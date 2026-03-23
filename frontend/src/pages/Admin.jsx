@@ -65,7 +65,8 @@ const Admin = () => {
                 resetForm();
                 fetchItems();
             } else {
-                showStatus('Failed to save item', false);
+                const err = await response.json().catch(() => ({}));
+                showStatus(err.error || 'Failed to save item', false);
             }
         } catch {
             showStatus('Failed to save item', false);

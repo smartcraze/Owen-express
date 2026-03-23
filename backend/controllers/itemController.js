@@ -56,9 +56,10 @@ exports.deleteItem = async (req, res) => {
 exports.updateItem = async (req, res) => {
     try {
         const { name, price, description, ingredients, type, isChefSpecial } = req.body;
+        if (!name || !price) return res.status(400).json({ error: 'Name and price required' });
         const updateData = { 
             name, 
-            price, 
+            price: Number(price), 
             description, 
             ingredients, 
             type, 
@@ -66,10 +67,10 @@ exports.updateItem = async (req, res) => {
         };
         if (req.file) updateData.image = req.file.filename;
         
-        const item = await Item.findByIdAndUpdate(req.params.id, updateData, { new: true });
+        const item = await Item.findByIdAndUpdate(req.params.id, updateData, { new: true, runValidators: true });
         if (!item) return res.status(404).json({ error: 'Item not found' });
         res.json(item);
     } catch (err) {
-        res.status(500).json({ error: 'Failed to update item' });
+        res.status(500).json({ error: 'Failed to update item', details: err.message });
     }
 };
