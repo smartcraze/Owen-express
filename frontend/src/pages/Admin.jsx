@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaStar, FaEdit, FaTrash, FaPlus, FaLeaf, FaDrumstickBite } from 'react-icons/fa';
+import { FaStar, FaEdit, FaTrash, FaPlus, FaLeaf, FaDrumstickBite, FaImage } from 'react-icons/fa';
 import { API_URL } from '../config';
 
 const Admin = () => {
@@ -12,22 +12,16 @@ const Admin = () => {
     const [type, setType] = useState('veg');
     const [isChefSpecial, setIsChefSpecial] = useState(false);
     const [image, setImage] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
     const [editingId, setEditingId] = useState(null);
+    const [editingImage, setEditingImage] = useState('');
     const [status, setStatus] = useState({ msg: '', ok: true });
     const navigate = useNavigate();
 
     useEffect(() => {
         let user = null;
-        try {
-            user = JSON.parse(localStorage.getItem('user'));
-        } catch {
-            navigate('/');
-            return;
-        }
-        if (!user || !user.isAdmin) {
-            navigate('/');
-            return;
-        }
+        try { user = JSON.parse(localStorage.getItem('user')); } catch { navigate('/'); return; }
+        if (!user || !user.isAdmin) { navigate('/'); return; }
         fetchItems();
     }, [navigate]);
 
@@ -35,12 +29,19 @@ const Admin = () => {
         fetch(`${API_URL}/api/items`)
             .then(res => res.json())
             .then(data => setItems(data))
-            .catch(() => setStatus({ msg: 'Failed to load items', ok: false }));
+            .catch(() => showStatus('Failed to load items', false));
     };
 
     const showStatus = (msg, ok = true) => {
         setStatus({ msg, ok });
         setTimeout(() => setStatus({ msg: '', ok: true }), 3000);
+    };
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        setImage(file);
+        setImagePreview(URL.createObjectURL(file));
     };
 
     const handleSubmit = async (e) => {
@@ -61,9 +62,7 @@ const Admin = () => {
             const response = await fetch(url, { method, body: formData });
             if (response.ok) {
                 showStatus(editingId ? 'Item updated!' : 'Item added!', true);
-                setName(''); setDescription(''); setPrice(''); setIngredients('');
-                setType('veg'); setIsChefSpecial(false); setImage(null); setEditingId(null);
-                document.getElementById('imageInput').value = '';
+                resetForm();
                 fetchItems();
             } else {
                 showStatus('Failed to save item', false);
@@ -77,12 +76,8 @@ const Admin = () => {
         if (!window.confirm('Delete this item?')) return;
         try {
             const response = await fetch(`${API_URL}/api/items/${id}`, { method: 'DELETE' });
-            if (response.ok) {
-                showStatus('Item deleted!', true);
-                fetchItems();
-            } else {
-                showStatus('Failed to delete item', false);
-            }
+            if (response.ok) { showStatus('Item deleted!', true); fetchItems(); }
+            else showStatus('Failed to delete item', false);
         } catch {
             showStatus('Failed to delete item', false);
         }
@@ -96,15 +91,21 @@ const Admin = () => {
         setIngredients(item.ingredients || '');
         setType(item.type || 'veg');
         setIsChefSpecial(item.isChefSpecial || false);
+        setImage(null);
+        setImagePreview(null);
+        setEditingImage(item.image || '');
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    const handleCancel = () => {
+    const resetForm = () => {
         setEditingId(null);
         setName(''); setDescription(''); setPrice(''); setIngredients('');
-        setType('veg'); setIsChefSpecial(false); setImage(null);
+        setType('veg'); setIsChefSpecial(false);
+        setImage(null); setImagePreview(null); setEditingImage('');
         document.getElementById('imageInput').value = '';
     };
+
+    const currentPreview = imagePreview || (editingImage ? `${API_URL}/uploads/${editingImage}` : null);
 
     return (
         <div className="min-h-screen" style={{ backgroundColor: '#fff5f0' }}>
@@ -150,14 +151,39 @@ const Admin = () => {
                                 <input type="checkbox" checked={isChefSpecial} onChange={(e) => setIsChefSpecial(e.target.checked)} className="w-5 h-5 cursor-pointer" />
                                 <span className="flex items-center gap-2 font-semibold text-orange-600"><FaStar /> Chef's Special</span>
                             </label>
-                            <input type="file" id="imageInput" accept="image/*" onChange={(e) => setImage(e.target.files[0])} required={!editingId}
-                                className="p-4 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-orange-500 transition-colors" />
+
+                            {/* Image Upload + Preview */}
+                            <div className="border-2 border-dashed border-gray-300 rounded-xl overflow-hidden hover:border-orange-500 transition-colors">
+                                {currentPreview ? (
+                                    <div className="relative">
+                                        <img src={currentPreview} alt="Preview" className="w-full h-48 object-cover" />
+                                        <div className="absolute bottom-2 right-2">
+                                            <label htmlFor="imageInput" className="bg-black/60 text-white text-xs px-3 py-1.5 rounded-lg cursor-pointer hover:bg-black/80 transition">
+                                                Change Image
+                                            </label>
+                                        </div>
+                                        {editingId && !imagePreview && (
+                                            <div className="absolute top-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded-lg">
+                                                Current Image
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <label htmlFor="imageInput" className="flex flex-col items-center justify-center h-32 cursor-pointer text-gray-400 hover:text-orange-500 transition-colors">
+                                        <FaImage size={32} className="mb-2" />
+                                        <span className="text-sm font-medium">Click to upload image</span>
+                                    </label>
+                                )}
+                                <input type="file" id="imageInput" accept="image/*" onChange={handleImageChange}
+                                    required={!editingId} className="hidden" />
+                            </div>
+
                             <div className="flex gap-3 mt-2">
                                 <button type="submit" className="flex-1 p-4 bg-gradient-to-r from-orange-600 to-red-600 text-white border-none rounded-xl text-lg font-bold cursor-pointer hover:shadow-lg transition-all">
                                     {editingId ? 'Update Item' : 'Add Item'}
                                 </button>
                                 {editingId && (
-                                    <button type="button" onClick={handleCancel} className="flex-1 p-4 bg-gray-500 text-white border-none rounded-xl text-lg font-bold cursor-pointer hover:bg-gray-600 transition-all">
+                                    <button type="button" onClick={resetForm} className="flex-1 p-4 bg-gray-500 text-white border-none rounded-xl text-lg font-bold cursor-pointer hover:bg-gray-600 transition-all">
                                         Cancel
                                     </button>
                                 )}
@@ -172,9 +198,15 @@ const Admin = () => {
                         {items.map(item => (
                             <div key={item._id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow">
                                 <div className="relative">
-                                    {item.image && (
-                                        <img src={`${API_URL}/uploads/${item.image}`} alt={item.name} className="w-full h-48 object-cover" />
-                                    )}
+                                    {item.image ? (
+                                        <img src={`${API_URL}/uploads/${item.image}`} alt={item.name}
+                                            className="w-full h-48 object-cover"
+                                            onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
+                                    ) : null}
+                                    <div className={`w-full h-48 bg-gray-100 items-center justify-center flex-col text-gray-400 ${item.image ? 'hidden' : 'flex'}`}>
+                                        <FaImage size={32} className="mb-2" />
+                                        <span className="text-sm">No Image</span>
+                                    </div>
                                     {item.isChefSpecial && (
                                         <div className="absolute top-2 right-2 bg-orange-500 text-white p-2 rounded-full">
                                             <FaStar />
