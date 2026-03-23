@@ -34,7 +34,7 @@ exports.createItem = async (req, res) => {
             ingredients, 
             type: type || 'veg', 
             isChefSpecial: isChefSpecial === 'true' || isChefSpecial === true, 
-            image: req.file?.filename || '' 
+            image: req.file?.path || '' 
         });
         await item.save();
         res.status(201).json(item);
@@ -65,7 +65,7 @@ exports.updateItem = async (req, res) => {
             type, 
             isChefSpecial: isChefSpecial === 'true' || isChefSpecial === true 
         };
-        if (req.file) updateData.image = req.file.filename;
+        if (req.file) updateData.image = req.file.path;
         
         const item = await Item.findByIdAndUpdate(req.params.id, updateData, { new: true, runValidators: true });
         if (!item) return res.status(404).json({ error: 'Item not found' });

@@ -106,7 +106,7 @@ const Admin = () => {
         document.getElementById('imageInput').value = '';
     };
 
-    const currentPreview = imagePreview || (editingImage ? `${API_URL}/uploads/${editingImage}` : null);
+    const currentPreview = imagePreview || (editingImage ? editingImage : null);
 
     return (
         <div className="min-h-screen" style={{ backgroundColor: '#fff5f0' }}>
@@ -200,7 +200,8 @@ const Admin = () => {
                             <div key={item._id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow">
                                 <div className="relative">
                                     {item.image ? (
-                                        <img src={`${API_URL}/uploads/${item.image}`} alt={item.name}
+                                        <img src={item.image}
+                                            alt={item.name}
                                             className="w-full h-48 object-cover"
                                             onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
                                     ) : null}
