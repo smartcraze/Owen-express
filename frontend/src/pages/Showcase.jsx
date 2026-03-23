@@ -105,7 +105,7 @@ const Showcase = ({ isLoggedIn }) => {
                                         style={{ backfaceVisibility: 'hidden' }}
                                         onClick={() => toggleFlip(item._id)}>
                                         <div className="relative w-full h-52 overflow-hidden">
-                                            <div className="w-full h-full bg-cover bg-center" style={{ backgroundImage: `url(${item.image})` }} />
+                                            <div className="w-full h-full bg-cover bg-center" style={{ backgroundImage: `url('${item.image}')` }} />
                                             <div className="absolute top-3 right-3 flex gap-2">
                                                 {item.isChefSpecial && (
                                                     <span className="bg-orange-500 text-white text-xs px-2.5 py-1 rounded-full font-bold flex items-center gap-1">
