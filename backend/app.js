@@ -14,6 +14,7 @@ app.use(cors({
         'http://localhost:5173',
         'http://localhost:3000',
         'https://food-owen.vercel.app',
+        'https://owen-express.vercel.app',
         /\.vercel\.app$/
     ],
     credentials: true
