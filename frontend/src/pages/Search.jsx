@@ -15,7 +15,7 @@ const Search = ({ cart, setCart }) => {
         fetch(`${API_URL}/api/items`)
             .then(res => res.json())
             .then(setMenuItems)
-            .catch(console.error);
+            .catch(() => {});
     }, []);
 
     useEffect(() => {

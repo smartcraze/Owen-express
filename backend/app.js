@@ -1,12 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const fs = require('fs');
-const path = require('path');
 require('dotenv').config();
-
-const uploadDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
 const itemRoutes = require('./routes/itemRoutes');
 const orderRoutes = require('./routes/orderRoutes');
@@ -34,13 +29,12 @@ mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('MongoDB Connected'))
     .catch(err => console.error('MongoDB connection error:', err.message));
 
-app.use('/uploads', express.static(uploadDir));
 app.use('/api/items', itemRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/users', userRoutes);
 
 app.use((req, res) => res.status(404).json({ message: 'Route not found' }));
-app.use((err, req, res, next) => res.status(500).json({ message: err.message || 'Internal server error' }));
+app.use((err, req, res, next) => res.status(500).json({ message: 'Internal server error' }));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));

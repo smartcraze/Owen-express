@@ -9,16 +9,15 @@ exports.googleAuth = async (req, res) => {
         let user = await User.findOne({ email: email.toLowerCase() });
         if (!user) {
             user = await User.create({
-                name: name || 'Google User',
+                name,
                 email: email.toLowerCase(),
                 password: 'google-oauth',
                 isGoogleUser: true
             });
         }
-        const token = generateToken(user._id);
-        res.json({ token, user: { name: user.name, email: user.email, isAdmin: false } });
-    } catch (error) {
-        res.status(500).json({ message: 'Google authentication failed', error: error.message });
+        res.json({ token: generateToken(user._id), user: { name: user.name, email: user.email, isAdmin: false } });
+    } catch {
+        res.status(500).json({ message: 'Google authentication failed' });
     }
 };
 
@@ -33,8 +32,8 @@ exports.signup = async (req, res) => {
         const user = new User({ name, email: email.toLowerCase(), password: hashedPassword });
         await user.save();
         res.status(201).json({ token: generateToken(user._id), user: { name, email: user.email } });
-    } catch (error) {
-        res.status(500).json({ message: 'Signup failed', error: error.message });
+    } catch {
+        res.status(500).json({ message: 'Signup failed' });
     }
 };
 
@@ -58,7 +57,7 @@ exports.login = async (req, res) => {
         }
 
         res.json({ token: generateToken(user._id), user: { name: user.name, email: user.email, isAdmin: false } });
-    } catch (error) {
+    } catch {
         res.status(500).json({ message: 'Login failed' });
     }
 };

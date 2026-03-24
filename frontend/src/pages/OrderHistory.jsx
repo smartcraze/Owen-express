@@ -56,8 +56,8 @@ const OrderHistory = () => {
                 setOrders(orders.map(o => o._id === ratingModal.orderId ? { ...o, rating: ratingModal.rating, review: ratingModal.review } : o));
                 setRatingModal({ show: false, orderId: null, rating: 0, review: '' });
             }
-        } catch (err) {
-            console.error('Error submitting rating:', err);
+        } catch {
+            alert('Failed to submit rating. Please try again.');
         }
     };
 

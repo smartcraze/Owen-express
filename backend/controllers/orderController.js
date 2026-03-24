@@ -10,16 +10,16 @@ exports.createOrder = async (req, res) => {
         const order = new Order({ name, address, phone, email: email.toLowerCase(), cart, total, paymentMethod: paymentMethod || 'cod' });
         await order.save();
         res.status(201).json({ message: 'Order placed successfully', order });
-    } catch (err) {
+    } catch {
         res.status(500).json({ error: 'Failed to create order' });
     }
 };
 
 exports.getUserOrders = async (req, res) => {
     try {
-        const orders = await Order.find({ email: req.params.email }).sort({ createdAt: -1 });
+        const orders = await Order.find({ email: req.params.email.toLowerCase() }).sort({ createdAt: -1 });
         res.json(orders);
-    } catch (err) {
+    } catch {
         res.status(500).json({ error: 'Failed to fetch orders' });
     }
 };
@@ -27,14 +27,15 @@ exports.getUserOrders = async (req, res) => {
 exports.rateOrder = async (req, res) => {
     try {
         const { rating, review } = req.body;
+        if (!rating || rating < 1 || rating > 5) return res.status(400).json({ error: 'Rating must be between 1 and 5' });
         const order = await Order.findByIdAndUpdate(
             req.params.id,
-            { rating, review },
+            { rating: Number(rating), review: review || '' },
             { new: true }
         );
         if (!order) return res.status(404).json({ error: 'Order not found' });
         res.json({ message: 'Rating submitted successfully', order });
-    } catch (err) {
+    } catch {
         res.status(500).json({ error: 'Failed to submit rating' });
     }
 };

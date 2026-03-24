@@ -38,7 +38,7 @@ exports.getItems = async (req, res) => {
             items = await Item.find();
         }
         res.json(items);
-    } catch (err) {
+    } catch {
         res.status(500).json({ error: 'Failed to fetch items' });
     }
 };
@@ -47,19 +47,18 @@ exports.createItem = async (req, res) => {
     try {
         const { name, price, description, ingredients, type, isChefSpecial } = req.body;
         if (!name || !price) return res.status(400).json({ error: 'Name and price required' });
-        
-        const item = new Item({ 
-            name, 
-            price, 
-            description, 
-            ingredients, 
-            type: type || 'veg', 
-            isChefSpecial: isChefSpecial === 'true' || isChefSpecial === true, 
-            image: req.file?.path || '' 
+        const item = new Item({
+            name,
+            price,
+            description,
+            ingredients,
+            type: type || 'veg',
+            isChefSpecial: isChefSpecial === 'true' || isChefSpecial === true,
+            image: req.file?.path || ''
         });
         await item.save();
         res.status(201).json(item);
-    } catch (err) {
+    } catch {
         res.status(500).json({ error: 'Failed to create item' });
     }
 };
@@ -69,7 +68,7 @@ exports.deleteItem = async (req, res) => {
         const item = await Item.findByIdAndDelete(req.params.id);
         if (!item) return res.status(404).json({ error: 'Item not found' });
         res.json({ message: 'Item deleted' });
-    } catch (err) {
+    } catch {
         res.status(500).json({ error: 'Failed to delete item' });
     }
 };
@@ -78,21 +77,20 @@ exports.updateItem = async (req, res) => {
     try {
         const { name, price, description, ingredients, type, isChefSpecial } = req.body;
         if (!name || !price) return res.status(400).json({ error: 'Name and price required' });
-        const updateData = { 
-            name, 
-            price: Number(price), 
-            description, 
-            ingredients, 
-            type, 
-            isChefSpecial: isChefSpecial === 'true' || isChefSpecial === true 
+        const existing = await Item.findById(req.params.id);
+        if (!existing) return res.status(404).json({ error: 'Item not found' });
+        const updateData = {
+            name,
+            price: Number(price),
+            description,
+            ingredients,
+            type,
+            isChefSpecial: isChefSpecial === 'true' || isChefSpecial === true,
+            image: req.file ? req.file.path : existing.image
         };
-        if (req.file) updateData.image = req.file.path;
-        else updateData.image = (await Item.findById(req.params.id))?.image || '';
-        
         const item = await Item.findByIdAndUpdate(req.params.id, updateData, { new: true, runValidators: true });
-        if (!item) return res.status(404).json({ error: 'Item not found' });
         res.json(item);
-    } catch (err) {
-        res.status(500).json({ error: 'Failed to update item', details: err.message });
+    } catch {
+        res.status(500).json({ error: 'Failed to update item' });
     }
 };
