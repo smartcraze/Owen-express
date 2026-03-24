@@ -1,20 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
-import { FaShoppingCart, FaSearch, FaUtensils, FaEnvelope, FaPhone } from 'react-icons/fa';
-import { API_URL } from './config';
-import Home from './pages/Home';
-import Showcase from './pages/Showcase';
-import Search from './pages/Search';
-import Payment from './components/Payment';
-import OrderForm from './components/OrderForm';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import Admin from './pages/Admin';
-import OrderHistory from './pages/OrderHistory';
-import ProtectedRoute from './components/ProtectedRoute';
-
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { FaShoppingCart, FaSearch, FaUtensils, FaEnvelope, FaPhone, FaBars, FaTimes } from 'react-icons/fa';
 import { API_URL } from './config';
 import Home from './pages/Home';
@@ -26,6 +11,8 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Admin from './pages/Admin';
 import OrderHistory from './pages/OrderHistory';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function Header({ cartCount, isLoggedIn, onLogout }) {
@@ -188,6 +175,8 @@ function App() {
                         <Route path="/" element={<Showcase isLoggedIn={isLoggedIn} />} />
                         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
                         <Route path="/signup" element={<Signup />} />
+                        <Route path="/forgot-password" element={<ForgotPassword />} />
+                        <Route path="/reset-password/:token" element={<ResetPassword />} />
                         <Route path="/admin" element={<Admin />} />
                         <Route path="/search" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Search cart={cart} setCart={setCart} /></ProtectedRoute>} />
                         <Route path="/orders" element={<ProtectedRoute isLoggedIn={isLoggedIn}><OrderHistory /></ProtectedRoute>} />

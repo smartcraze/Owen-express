@@ -89,6 +89,9 @@ const Login = ({ setIsLoggedIn }) => {
                             onChange={e => setPassword(e.target.value)} required
                             className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none transition" />
                     </div>
+                    <div className="text-right -mt-2">
+                        <span onClick={() => navigate('/forgot-password')} className="text-sm text-red-600 cursor-pointer hover:underline">Forgot password?</span>
+                    </div>
                     <button type="submit" disabled={loading}
                         className="w-full py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 hover:shadow-lg transform hover:scale-[1.02] transition-all disabled:opacity-50">
                         {loading ? 'Logging in...' : 'Login'}
