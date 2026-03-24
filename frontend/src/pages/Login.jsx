@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FaEnvelope, FaLock, FaSignInAlt } from 'react-icons/fa';
 import { API_URL } from '../config';
 import { signInWithGoogle } from '../firebase';
@@ -8,7 +8,10 @@ const Login = ({ setIsLoggedIn }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const resetSuccess = searchParams.get('reset') === 'success';
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -17,6 +20,7 @@ const Login = ({ setIsLoggedIn }) => {
     }, [navigate]);
 
     const handleGoogleLogin = async () => {
+        setError('');
         try {
             const result = await signInWithGoogle();
             const { displayName, email } = result.user;
@@ -32,16 +36,17 @@ const Login = ({ setIsLoggedIn }) => {
                 setIsLoggedIn(true);
                 navigate('/');
             } else {
-                alert(data.message || 'Google login failed');
+                setError(data.message || 'Google login failed');
             }
         } catch (err) {
-            alert('Google login failed: ' + err.message);
+            setError('Google login failed: ' + err.message);
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return alert('Please enter a valid email address');
+        setError('');
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setError('Please enter a valid email address');
         setLoading(true);
         try {
             const res = await fetch(`${API_URL}/api/users/login`, {
@@ -56,10 +61,10 @@ const Login = ({ setIsLoggedIn }) => {
                 setIsLoggedIn(true);
                 navigate(data.user.isAdmin ? '/admin' : '/');
             } else {
-                alert(data.message || 'Login failed');
+                setError(data.message || 'Login failed');
             }
         } catch {
-            alert('Login failed. Please try again.');
+            setError('Login failed. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -92,6 +97,8 @@ const Login = ({ setIsLoggedIn }) => {
                     <div className="text-right -mt-2">
                         <span onClick={() => navigate('/forgot-password')} className="text-sm text-red-600 cursor-pointer hover:underline">Forgot password?</span>
                     </div>
+                    {resetSuccess && <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm text-center font-medium">✅ Password reset successful! Please login.</div>}
+                {error && <p className="text-red-500 text-sm text-center -mt-2">{error}</p>}
                     <button type="submit" disabled={loading}
                         className="w-full py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 hover:shadow-lg transform hover:scale-[1.02] transition-all disabled:opacity-50">
                         {loading ? 'Logging in...' : 'Login'}

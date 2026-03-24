@@ -9,6 +9,8 @@ const Signup = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -18,6 +20,7 @@ const Signup = () => {
     }, [navigate]);
 
     const handleGoogleSignup = async () => {
+        setError('');
         try {
             const result = await signInWithGoogle();
             const { displayName, email } = result.user;
@@ -32,17 +35,18 @@ const Signup = () => {
                 localStorage.setItem('user', JSON.stringify(data.user));
                 navigate('/');
             } else {
-                alert(data.message || 'Google signup failed');
+                setError(data.message || 'Google signup failed');
             }
         } catch (err) {
-            alert(err?.message || 'Google signup failed. Try again.');
+            setError(err?.message || 'Google signup failed. Try again.');
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return alert('Please enter a valid email address');
-        if (password.length < 6) return alert('Password must be at least 6 characters long');
+        setError(''); setSuccess('');
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setError('Please enter a valid email address');
+        if (password.length < 6) return setError('Password must be at least 6 characters long');
         setLoading(true);
         try {
             const res = await fetch(`${API_URL}/api/users/signup`, {
@@ -52,13 +56,13 @@ const Signup = () => {
             });
             const data = await res.json();
             if (res.ok) {
-                alert('Signup successful! Please login.');
-                navigate('/login');
+                setSuccess('Account created! Redirecting to login...');
+                setTimeout(() => navigate('/login'), 1500);
             } else {
-                alert(data.message || 'Signup failed');
+                setError(data.message || 'Signup failed');
             }
         } catch (err) {
-            alert('Signup failed. Please try again. Error: ' + (err?.message || err));
+            setError('Signup failed. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -98,6 +102,8 @@ const Signup = () => {
                         className="w-full py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 hover:shadow-lg transform hover:scale-[1.02] transition-all disabled:opacity-50">
                         {loading ? 'Creating Account...' : 'Sign Up'}
                     </button>
+                    {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+                    {success && <p className="text-green-600 text-sm text-center font-medium">{success}</p>}
                 </form>
 
                 <div className="mt-4">

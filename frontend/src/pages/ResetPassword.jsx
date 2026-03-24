@@ -24,8 +24,8 @@ const ResetPassword = () => {
             });
             const data = await res.json();
             if (res.ok) {
-                alert('Password reset successful! Please login.');
-                navigate('/login');
+                setError('');
+                navigate('/login?reset=success');
             } else {
                 setError(data.message || 'Reset failed');
             }
