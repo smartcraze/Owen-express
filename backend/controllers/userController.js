@@ -89,8 +89,9 @@ exports.forgotPassword = async (req, res) => {
             html: `<p>Hi ${user.name},</p><p>Click the link below to reset your password. It expires in 1 hour.</p><p><a href="${resetUrl}">${resetUrl}</a></p><p>If you didn't request this, ignore this email.</p>`
         });
         res.json({ message: 'If that email exists, a reset link has been sent' });
-    } catch {
-        res.status(500).json({ message: 'Failed to send reset email' });
+    } catch (err) {
+        console.error('forgotPassword error:', err.message);
+        res.status(500).json({ message: 'Failed to send reset email', error: err.message });
     }
 };
 
