@@ -8,6 +8,7 @@ const Login = ({ setIsLoggedIn }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const [googleLoading, setGoogleLoading] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
@@ -19,6 +20,7 @@ const Login = ({ setIsLoggedIn }) => {
 
     const handleGoogleLogin = async () => {
         setError('');
+        setGoogleLoading(true);
         try {
             const result = await signInWithGoogle();
             const { displayName, email } = result.user;
@@ -38,6 +40,8 @@ const Login = ({ setIsLoggedIn }) => {
             }
         } catch (err) {
             setError('Google login failed: ' + err.message);
+        } finally {
+            setGoogleLoading(false);
         }
     };
 
@@ -105,9 +109,10 @@ const Login = ({ setIsLoggedIn }) => {
                         <span className="text-gray-400 text-sm">OR</span>
                         <hr className="flex-1 border-gray-300" />
                     </div>
-                    <button type="button" onClick={handleGoogleLogin}
-                        className="w-full py-3 border-2 border-gray-300 rounded-lg flex items-center justify-center gap-3 font-semibold text-gray-700 hover:bg-gray-50 transition">
-                        <img src="https://www.google.com/favicon.ico" alt="Google" className="w-5 h-5" /> Continue with Google
+                    <button type="button" onClick={handleGoogleLogin} disabled={googleLoading}
+                        className="w-full py-3 border-2 border-gray-300 rounded-lg flex items-center justify-center gap-3 font-semibold text-gray-700 hover:bg-gray-50 transition disabled:opacity-60">
+                        {googleLoading ? <span className="w-5 h-5 border-2 border-gray-400 border-t-red-600 rounded-full animate-spin" /> : <img src="https://www.google.com/favicon.ico" alt="Google" className="w-5 h-5" />}
+                        {googleLoading ? 'Signing in...' : 'Continue with Google'}
                     </button>
                 </div>
 
