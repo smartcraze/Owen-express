@@ -79,12 +79,17 @@ exports.forgotPassword = async (req, res) => {
         await user.save();
         const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${token}`;
         const resend = new Resend(process.env.RESEND_API_KEY);
-        await resend.emails.send({
+        const { data, error } = await resend.emails.send({
             from: 'Owen Express <onboarding@resend.dev>',
             to: user.email,
             subject: 'Password Reset — Owen Express',
             html: `<p>Hi ${user.name},</p><p>Click the link below to reset your password. It expires in 1 hour.</p><p><a href="${resetUrl}">${resetUrl}</a></p><p>If you didn't request this, ignore this email.</p>`
         });
+        if (error) {
+            console.error('Resend error:', JSON.stringify(error));
+            return res.status(500).json({ message: 'Failed to send reset email', error });
+        }
+        console.log('Resend success:', data?.id);
         res.json({ message: 'If that email exists, a reset link has been sent' });
     } catch (err) {
         console.error('forgotPassword error:', err.message);
