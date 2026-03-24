@@ -2,7 +2,7 @@ const User = require('../models/User');
 const { generateToken } = require('../middleware/auth');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
 exports.googleAuth = async (req, res) => {
     try {
@@ -78,12 +78,9 @@ exports.forgotPassword = async (req, res) => {
         user.resetTokenExpiry = Date.now() + 3600000; // 1 hour
         await user.save();
         const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${token}`;
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
-        });
-        await transporter.sendMail({
-            from: `"Owen Express" <${process.env.EMAIL_USER}>`,
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        await resend.emails.send({
+            from: 'Owen Express <onboarding@resend.dev>',
             to: user.email,
             subject: 'Password Reset — Owen Express',
             html: `<p>Hi ${user.name},</p><p>Click the link below to reset your password. It expires in 1 hour.</p><p><a href="${resetUrl}">${resetUrl}</a></p><p>If you didn't request this, ignore this email.</p>`
