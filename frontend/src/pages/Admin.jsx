@@ -118,36 +118,36 @@ const Admin = () => {
     return (
         <div className="min-h-screen" style={{ backgroundColor: '#fff5f0' }}>
             {/* Header */}
-            <div className="bg-gradient-to-r from-orange-600 to-red-600 text-white px-8 py-6 shadow-lg">
-                <div className="max-w-7xl mx-auto flex items-center justify-between">
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Admin Panel</h1>
+            <div className="bg-gradient-to-r from-orange-600 to-red-600 text-white px-4 sm:px-8 py-6 shadow-lg">
+                <div className="max-w-7xl mx-auto">
+                    <div className="mb-4">
+                        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Admin Panel</h1>
                         <p className="text-orange-100 text-sm mt-0.5">Owen Express — Menu Management</p>
                     </div>
-                    <div className="flex gap-6 text-center">
-                        <div className="bg-white/20 rounded-xl px-5 py-2.5">
-                            <div className="text-2xl font-bold">{items.length}</div>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div className="bg-white/20 rounded-xl px-3 sm:px-5 py-2.5 text-center">
+                            <div className="text-xl sm:text-2xl font-bold">{items.length}</div>
                             <div className="text-xs text-orange-100">Total Items</div>
                         </div>
-                        <div className="bg-white/20 rounded-xl px-5 py-2.5">
-                            <div className="text-2xl font-bold text-green-300">{vegCount}</div>
+                        <div className="bg-white/20 rounded-xl px-3 sm:px-5 py-2.5 text-center">
+                            <div className="text-xl sm:text-2xl font-bold text-green-300">{vegCount}</div>
                             <div className="text-xs text-orange-100">Veg</div>
                         </div>
-                        <div className="bg-white/20 rounded-xl px-5 py-2.5">
-                            <div className="text-2xl font-bold text-red-200">{nonVegCount}</div>
+                        <div className="bg-white/20 rounded-xl px-3 sm:px-5 py-2.5 text-center">
+                            <div className="text-xl sm:text-2xl font-bold text-red-200">{nonVegCount}</div>
                             <div className="text-xs text-orange-100">Non-Veg</div>
                         </div>
-                        <div className="bg-white/20 rounded-xl px-5 py-2.5">
-                            <div className="text-2xl font-bold text-yellow-300">{specialCount}</div>
+                        <div className="bg-white/20 rounded-xl px-3 sm:px-5 py-2.5 text-center">
+                            <div className="text-xl sm:text-2xl font-bold text-yellow-300">{specialCount}</div>
                             <div className="text-xs text-orange-100">Specials</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto px-6 py-8 flex gap-8 items-start">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col lg:flex-row gap-8 items-start">
                 {/* Form Panel */}
-                <div className="w-96 flex-shrink-0 sticky top-6">
+                <div className="w-full lg:w-96 lg:flex-shrink-0 lg:sticky lg:top-6">
                     <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
                         <div className={`px-6 py-4 flex items-center justify-between ${editingId ? 'bg-blue-600' : 'bg-gradient-to-r from-orange-500 to-red-500'}`}>
                             <h2 className="text-lg font-bold text-white flex items-center gap-2">

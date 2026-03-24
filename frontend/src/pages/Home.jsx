@@ -39,20 +39,18 @@ const Home = ({ cart, setCart }) => {
 
     return (
         <div>
-            <div className="flex items-center justify-between relative mb-10">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-10">
                 <button className="px-5 py-2.5 bg-white text-red-600 border-2 border-red-500 rounded-xl font-semibold hover:bg-red-50 transition-all shadow-sm" onClick={() => navigate('/')}>
                     ← Back to Home
                 </button>
                 <div className="text-center flex-1">
-                    <h1 className="text-4xl font-bold bg-gradient-to-r from-yellow-500 to-red-600 bg-clip-text text-transparent mb-2">
-                        {searchQuery ? `Search Results for "${searchQuery}"` : 'Our Full Menu'}
+                    <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-yellow-500 to-red-600 bg-clip-text text-transparent mb-2">
+                        {searchQuery ? `Results for "${searchQuery}"` : 'Our Full Menu'}
                     </h1>
-                    <p className="text-gray-500 text-lg">
+                    <p className="text-gray-500 text-sm sm:text-lg">
                         {searchQuery ? `Found ${filteredItems.length} item(s)` : 'Explore our complete selection of premium dishes'}
                     </p>
                 </div>
-
-                {/* Toggle */}
                 <div className="flex items-center gap-2 bg-white px-4 py-2.5 rounded-xl shadow-sm border border-yellow-200">
                     <span className={`flex items-center gap-1.5 text-sm font-semibold transition-colors ${!showNonVeg ? 'text-green-600' : 'text-gray-400'}`}>
                         <FaLeaf size={12} /> Veg

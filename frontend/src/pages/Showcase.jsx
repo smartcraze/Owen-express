@@ -27,7 +27,7 @@ const Showcase = ({ isLoggedIn }) => {
     return (
         <div className="space-y-20">
             {/* Hero */}
-            <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden rounded-3xl shadow-xl"
+            <section className="relative min-h-[60vh] sm:min-h-[80vh] flex items-center justify-center overflow-hidden rounded-3xl shadow-xl"
                 style={{ background: '#111' }}>
                 <div className="absolute inset-0 rounded-3xl overflow-hidden">
                     <div className="absolute inset-0" style={{ backgroundImage: "url('/images/backimg.jpg')", backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.75 }} />
@@ -64,7 +64,7 @@ const Showcase = ({ isLoggedIn }) => {
                         )}
                     </div>
 
-                    <div className="flex justify-center gap-12 mt-16">
+                    <div className="flex justify-center gap-6 sm:gap-12 mt-10 sm:mt-16">
                         {[['50+', 'Menu Items'], ['4.9', 'Star Rating'], ['30min', 'Delivery']].map(([val, label]) => (
                             <div key={label} className="text-center">
                                 <p className="text-2xl font-black text-orange-300">{val}</p>
@@ -94,7 +94,7 @@ const Showcase = ({ isLoggedIn }) => {
                         <p className="mt-4 text-gray-600">Loading delicious items...</p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 p-5">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 p-3 sm:p-5">
                         {featuredItems.map(item => (
                             <div key={item._id} className="relative h-[430px]" style={{ perspective: '1000px' }}>
                                 <div className="relative w-full h-full transition-transform duration-500"

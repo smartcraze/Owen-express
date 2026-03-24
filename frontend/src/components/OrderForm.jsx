@@ -30,7 +30,7 @@ const OrderForm = ({ cart, removeFromCart }) => {
     };
 
     return (
-        <div className="max-w-5xl mx-auto my-8">
+        <div className="max-w-5xl mx-auto my-4 sm:my-8">
             <button onClick={() => navigate('/menu')} className="px-5 py-2.5 bg-white text-red-600 rounded-xl font-medium transition-all shadow-lg hover:shadow-xl mb-6">
                 ← Back to Menu
             </button>

@@ -61,7 +61,7 @@ const Payment = ({ clearCart }) => {
     };
 
     return (
-        <div className="max-w-2xl mx-auto my-8">
+        <div className="max-w-2xl mx-auto my-4 sm:my-8 px-2 sm:px-0">
             <button onClick={() => navigate('/order-summary')} className="px-5 py-2.5 bg-white text-red-600 rounded-xl font-medium transition-all shadow-lg hover:shadow-xl mb-6">
                 ← Back to Order Summary
             </button>

@@ -13,9 +13,25 @@ import Admin from './pages/Admin';
 import OrderHistory from './pages/OrderHistory';
 import ProtectedRoute from './components/ProtectedRoute';
 
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { FaShoppingCart, FaSearch, FaUtensils, FaEnvelope, FaPhone, FaBars, FaTimes } from 'react-icons/fa';
+import { API_URL } from './config';
+import Home from './pages/Home';
+import Showcase from './pages/Showcase';
+import Search from './pages/Search';
+import Payment from './components/Payment';
+import OrderForm from './components/OrderForm';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import Admin from './pages/Admin';
+import OrderHistory from './pages/OrderHistory';
+import ProtectedRoute from './components/ProtectedRoute';
+
 function Header({ cartCount, isLoggedIn, onLogout }) {
     const nav = useNavigate();
     const [scrolled, setScrolled] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 20);
@@ -23,30 +39,31 @@ function Header({ cartCount, isLoggedIn, onLogout }) {
         return () => window.removeEventListener('scroll', onScroll);
     }, []);
 
-    const navBtn = "bg-transparent border-none text-base font-medium text-gray-800 cursor-pointer px-4 py-2 rounded-xl hover:text-red-600 hover:bg-yellow-100 transition-all";
+    // close menu on route change
+    const go = (path) => { nav(path); setMenuOpen(false); };
 
     return (
         <header className={`sticky top-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-md py-3' : 'bg-white shadow-sm py-4'}`}>
-            <div className="max-w-7xl mx-auto px-8 flex justify-between items-center">
-                <div className="flex items-center gap-2.5 cursor-pointer group" onClick={() => nav('/')}>
+            <div className="max-w-7xl mx-auto px-4 sm:px-8 flex justify-between items-center">
+                {/* Logo */}
+                <div className="flex items-center gap-2.5 cursor-pointer group" onClick={() => go('/')}>
                     <div className="w-9 h-9 rounded-xl bg-red-600 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
                         <FaUtensils className="text-white text-sm" />
                     </div>
-                    <h1 className="text-2xl font-black text-red-600">Owen Express</h1>
+                    <h1 className="text-xl sm:text-2xl font-black text-red-600">Owen Express</h1>
                 </div>
 
-                <nav className="flex gap-2 items-center">
+                {/* Desktop Nav */}
+                <nav className="hidden md:flex gap-2 items-center">
                     {isLoggedIn ? (
                         <>
-                            <button className={navBtn} onClick={() => nav('/')}>Home</button>
-                            <button className={navBtn} onClick={() => nav('/menu')}>Menu</button>
-                            <button className={navBtn} onClick={() => nav('/orders')}>My Orders</button>
-                            <button className={navBtn} onClick={() => nav('/search')}><FaSearch className="text-lg" /></button>
-                            <button className={`relative ${navBtn}`} onClick={() => nav('/order-summary')}>
+                            <button className="bg-transparent border-none text-base font-medium text-gray-800 cursor-pointer px-4 py-2 rounded-xl hover:text-red-600 hover:bg-yellow-100 transition-all" onClick={() => go('/')}>Home</button>
+                            <button className="bg-transparent border-none text-base font-medium text-gray-800 cursor-pointer px-4 py-2 rounded-xl hover:text-red-600 hover:bg-yellow-100 transition-all" onClick={() => go('/menu')}>Menu</button>
+                            <button className="bg-transparent border-none text-base font-medium text-gray-800 cursor-pointer px-4 py-2 rounded-xl hover:text-red-600 hover:bg-yellow-100 transition-all" onClick={() => go('/orders')}>My Orders</button>
+                            <button className="bg-transparent border-none text-base font-medium text-gray-800 cursor-pointer px-4 py-2 rounded-xl hover:text-red-600 hover:bg-yellow-100 transition-all" onClick={() => go('/search')}><FaSearch className="text-lg" /></button>
+                            <button className="relative bg-transparent border-none text-base font-medium text-gray-800 cursor-pointer px-4 py-2 rounded-xl hover:text-red-600 hover:bg-yellow-100 transition-all" onClick={() => go('/order-summary')}>
                                 {cartCount > 0 && (
-                                    <span className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
-                                        {cartCount}
-                                    </span>
+                                    <span className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">{cartCount}</span>
                                 )}
                                 <FaShoppingCart className="text-lg" />
                             </button>
@@ -54,13 +71,49 @@ function Header({ cartCount, isLoggedIn, onLogout }) {
                         </>
                     ) : (
                         <>
-                            <button className={navBtn} onClick={() => nav('/')}>Home</button>
-                            <button className={navBtn} onClick={() => nav('/login')}>Login</button>
-                            <button className="ml-2 px-5 py-2 text-sm font-bold bg-red-600 text-white rounded-xl hover:bg-red-700 hover:shadow-lg transition-all" onClick={() => nav('/signup')}>Sign Up</button>
+                            <button className="bg-transparent border-none text-base font-medium text-gray-800 cursor-pointer px-4 py-2 rounded-xl hover:text-red-600 hover:bg-yellow-100 transition-all" onClick={() => go('/')}>Home</button>
+                            <button className="bg-transparent border-none text-base font-medium text-gray-800 cursor-pointer px-4 py-2 rounded-xl hover:text-red-600 hover:bg-yellow-100 transition-all" onClick={() => go('/login')}>Login</button>
+                            <button className="ml-2 px-5 py-2 text-sm font-bold bg-red-600 text-white rounded-xl hover:bg-red-700 hover:shadow-lg transition-all" onClick={() => go('/signup')}>Sign Up</button>
                         </>
                     )}
                 </nav>
+
+                {/* Mobile right side */}
+                <div className="flex md:hidden items-center gap-3">
+                    {isLoggedIn && (
+                        <button className="relative p-2 text-gray-800" onClick={() => go('/order-summary')}>
+                            {cartCount > 0 && (
+                                <span className="absolute -top-1 -right-1 bg-red-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-bold">{cartCount}</span>
+                            )}
+                            <FaShoppingCart className="text-xl" />
+                        </button>
+                    )}
+                    <button className="p-2 text-gray-800" onClick={() => setMenuOpen(!menuOpen)}>
+                        {menuOpen ? <FaTimes className="text-2xl" /> : <FaBars className="text-2xl" />}
+                    </button>
+                </div>
             </div>
+
+            {/* Mobile Dropdown Menu */}
+            {menuOpen && (
+                <div className="md:hidden bg-white border-t border-gray-100 shadow-lg px-4 py-4 flex flex-col gap-2">
+                    {isLoggedIn ? (
+                        <>
+                            <button className="text-left px-4 py-3 rounded-xl text-gray-800 font-medium hover:bg-yellow-50 hover:text-red-600 transition-all" onClick={() => go('/')}>🏠 Home</button>
+                            <button className="text-left px-4 py-3 rounded-xl text-gray-800 font-medium hover:bg-yellow-50 hover:text-red-600 transition-all" onClick={() => go('/menu')}>🍽️ Menu</button>
+                            <button className="text-left px-4 py-3 rounded-xl text-gray-800 font-medium hover:bg-yellow-50 hover:text-red-600 transition-all" onClick={() => go('/orders')}>📦 My Orders</button>
+                            <button className="text-left px-4 py-3 rounded-xl text-gray-800 font-medium hover:bg-yellow-50 hover:text-red-600 transition-all" onClick={() => go('/search')}>🔍 Search</button>
+                            <button className="mt-2 px-4 py-3 text-sm font-semibold text-red-600 border-2 border-red-500 rounded-xl hover:bg-red-600 hover:text-white transition-all" onClick={() => { onLogout(); setMenuOpen(false); }}>Logout</button>
+                        </>
+                    ) : (
+                        <>
+                            <button className="text-left px-4 py-3 rounded-xl text-gray-800 font-medium hover:bg-yellow-50 hover:text-red-600 transition-all" onClick={() => go('/')}>🏠 Home</button>
+                            <button className="text-left px-4 py-3 rounded-xl text-gray-800 font-medium hover:bg-yellow-50 hover:text-red-600 transition-all" onClick={() => go('/login')}>🔑 Login</button>
+                            <button className="mt-2 px-4 py-3 text-sm font-bold bg-red-600 text-white rounded-xl hover:bg-red-700 transition-all" onClick={() => go('/signup')}>Sign Up</button>
+                        </>
+                    )}
+                </div>
+            )}
         </header>
     );
 }
@@ -130,7 +183,7 @@ function App() {
         <Router>
             <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#fff5f0' }}>
                 <Header cartCount={cart.length} isLoggedIn={isLoggedIn} onLogout={handleLogout} />
-                <main className="flex-1 p-8 max-w-7xl mx-auto w-full">
+                <main className="flex-1 p-4 sm:p-8 max-w-7xl mx-auto w-full">
                     <Routes>
                         <Route path="/" element={<Showcase isLoggedIn={isLoggedIn} />} />
                         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
