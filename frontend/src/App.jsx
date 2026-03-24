@@ -11,8 +11,6 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Admin from './pages/Admin';
 import OrderHistory from './pages/OrderHistory';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function Header({ cartCount, isLoggedIn, onLogout }) {
@@ -175,8 +173,6 @@ function App() {
                         <Route path="/" element={<Showcase isLoggedIn={isLoggedIn} />} />
                         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
                         <Route path="/signup" element={<Signup />} />
-                        <Route path="/forgot-password" element={<ForgotPassword />} />
-                        <Route path="/reset-password/:token" element={<ResetPassword />} />
                         <Route path="/admin" element={<Admin />} />
                         <Route path="/search" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Search cart={cart} setCart={setCart} /></ProtectedRoute>} />
                         <Route path="/orders" element={<ProtectedRoute isLoggedIn={isLoggedIn}><OrderHistory /></ProtectedRoute>} />

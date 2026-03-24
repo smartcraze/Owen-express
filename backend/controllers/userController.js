@@ -1,8 +1,6 @@
 const User = require('../models/User');
 const { generateToken } = require('../middleware/auth');
 const bcrypt = require('bcryptjs');
-const crypto = require('crypto');
-const nodemailer = require('nodemailer');
 
 exports.googleAuth = async (req, res) => {
     try {
@@ -61,56 +59,6 @@ exports.login = async (req, res) => {
         res.json({ token: generateToken(user._id), user: { name: user.name, email: user.email, isAdmin: false } });
     } catch {
         res.status(500).json({ message: 'Login failed' });
-    }
-};
-
-exports.forgotPassword = async (req, res) => {
-    try {
-        const { email } = req.body;
-        if (!email) return res.status(400).json({ message: 'Email is required' });
-        const user = await User.findOne({ email: email.toLowerCase() });
-        // Always return success to prevent email enumeration
-        if (!user || user.isGoogleUser) {
-            return res.json({ message: 'If that email exists, a reset link has been sent' });
-        }
-        const token = crypto.randomBytes(32).toString('hex');
-        user.resetToken = token;
-        user.resetTokenExpiry = Date.now() + 3600000; // 1 hour
-        await user.save();
-        const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${token}`;
-        const transporter = nodemailer.createTransport({
-            host: 'smtp.resend.com',
-            port: 587,
-            secure: false,
-            auth: { user: 'resend', pass: process.env.RESEND_API_KEY }
-        });
-        await transporter.sendMail({
-            from: 'Owen Express <onboarding@resend.dev>',
-            to: user.email,
-            subject: 'Password Reset — Owen Express',
-            html: `<p>Hi ${user.name},</p><p>Click the link below to reset your password. It expires in 1 hour.</p><p><a href="${resetUrl}">${resetUrl}</a></p><p>If you didn't request this, ignore this email.</p>`
-        });
-        res.json({ message: 'If that email exists, a reset link has been sent' });
-    } catch (err) {
-        console.error('forgotPassword error:', err.message);
-        res.status(500).json({ message: 'Failed to send reset email', error: err.message });
-    }
-};
-
-exports.resetPassword = async (req, res) => {
-    try {
-        const { token, password } = req.body;
-        if (!token || !password) return res.status(400).json({ message: 'Token and password are required' });
-        if (password.length < 6) return res.status(400).json({ message: 'Password must be at least 6 characters' });
-        const user = await User.findOne({ resetToken: token, resetTokenExpiry: { $gt: Date.now() } });
-        if (!user) return res.status(400).json({ message: 'Invalid or expired reset link' });
-        user.password = await bcrypt.hash(password, 10);
-        user.resetToken = undefined;
-        user.resetTokenExpiry = undefined;
-        await user.save();
-        res.json({ message: 'Password reset successful' });
-    } catch {
-        res.status(500).json({ message: 'Password reset failed' });
     }
 };
 
