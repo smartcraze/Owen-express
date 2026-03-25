@@ -233,8 +233,15 @@ npm run dev
 ## 👤 Default Admin
 
 ```
-Email:    admin@gmail.com
-Password: admin123
+## 🔐 Admin Access
+
+The application includes a secure admin dashboard with role-based access.
+
+To access admin features:
+- Login with an account that has admin privileges
+- Admin roles are managed via the database
+
+⚠️ Demo admin access is not publicly shared for security reasons.
 ```
 
 ---
