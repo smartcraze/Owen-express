@@ -42,8 +42,8 @@ exports.login = async (req, res) => {
         const { email, password } = req.body;
         if (!email || !password) return res.status(400).json({ message: 'Email and password are required' });
 
-        if (email === 'admin@gmail.com' && password === 'admin123') {
-            return res.json({ token: generateToken('admin'), user: { name: 'Admin', email, isAdmin: true } });
+        if (email.toLowerCase() === process.env.ADMIN_EMAIL && await bcrypt.compare(password, process.env.ADMIN_PASSWORD_HASH)) {
+            return res.json({ token: generateToken('admin'), user: { name: 'Admin', email: process.env.ADMIN_EMAIL, isAdmin: true } });
         }
 
         const user = await User.findOne({ email: email.toLowerCase() });
@@ -65,7 +65,7 @@ exports.login = async (req, res) => {
 exports.verifyAuth = async (req, res) => {
     try {
         if (req.userId === 'admin') {
-            return res.json({ user: { name: 'Admin', email: 'admin@gmail.com', isAdmin: true } });
+            return res.json({ user: { name: 'Admin', email: process.env.ADMIN_EMAIL, isAdmin: true } });
         }
         const user = await User.findById(req.userId).select('-password');
         if (!user) return res.status(404).json({ message: 'User not found' });
