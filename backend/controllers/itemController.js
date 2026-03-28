@@ -45,15 +45,14 @@ exports.getItems = async (req, res) => {
 
 exports.createItem = async (req, res) => {
     try {
-        const { name, price, description, ingredients, type, isChefSpecial } = req.body;
+        const { name, price, description, ingredients, type, isChefSpecial, prepTime, deliveryTime } = req.body;
         if (!name || !price) return res.status(400).json({ error: 'Name and price required' });
         const item = new Item({
-            name,
-            price,
-            description,
-            ingredients,
+            name, price, description, ingredients,
             type: type || 'veg',
             isChefSpecial: isChefSpecial === 'true' || isChefSpecial === true,
+            prepTime: Number(prepTime) || 15,
+            deliveryTime: Number(deliveryTime) || 30,
             image: req.file?.path || ''
         });
         await item.save();
@@ -75,17 +74,15 @@ exports.deleteItem = async (req, res) => {
 
 exports.updateItem = async (req, res) => {
     try {
-        const { name, price, description, ingredients, type, isChefSpecial } = req.body;
+        const { name, price, description, ingredients, type, isChefSpecial, prepTime, deliveryTime } = req.body;
         if (!name || !price) return res.status(400).json({ error: 'Name and price required' });
         const existing = await Item.findById(req.params.id);
         if (!existing) return res.status(404).json({ error: 'Item not found' });
         const updateData = {
-            name,
-            price: Number(price),
-            description,
-            ingredients,
-            type,
+            name, price: Number(price), description, ingredients, type,
             isChefSpecial: isChefSpecial === 'true' || isChefSpecial === true,
+            prepTime: Number(prepTime) || existing.prepTime || 15,
+            deliveryTime: Number(deliveryTime) || existing.deliveryTime || 30,
             image: req.file ? req.file.path : existing.image
         };
         const item = await Item.findByIdAndUpdate(req.params.id, updateData, { new: true, runValidators: true });

@@ -8,6 +8,7 @@ const orderSchema = new mongoose.Schema({
     cart: { type: Array, required: true },
     total: { type: Number, required: true },
     paymentMethod: { type: String, enum: ['upi', 'credit', 'cod'], default: 'cod' },
+    status: { type: String, enum: ['pending', 'accepted', 'rejected', 'preparing', 'out_for_delivery', 'delivered'], default: 'pending' },
     rating: { type: Number, min: 1, max: 5, default: null },
     review: { type: String, default: '' }
 }, { timestamps: true });

@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaStar, FaEdit, FaTrash, FaPlus, FaLeaf, FaDrumstickBite, FaImage, FaTimes, FaUtensils } from 'react-icons/fa';
+import { FaStar, FaEdit, FaTrash, FaPlus, FaLeaf, FaDrumstickBite, FaImage, FaTimes, FaUtensils, FaShoppingBag, FaCheck, FaBan, FaClock } from 'react-icons/fa';
 import { API_URL } from '../config';
 
 const Admin = () => {
     const [items, setItems] = useState([]);
+    const [activeTab, setActiveTab] = useState('menu');
+    const [orders, setOrders] = useState([]);
+    const [ordersLoading, setOrdersLoading] = useState(false);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
     const [ingredients, setIngredients] = useState('');
     const [type, setType] = useState('veg');
     const [isChefSpecial, setIsChefSpecial] = useState(false);
+    const [prepTime, setPrepTime] = useState(15);
+    const [deliveryTime, setDeliveryTime] = useState(30);
     const [image, setImage] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
     const [editingId, setEditingId] = useState(null);
@@ -24,7 +29,27 @@ const Admin = () => {
         try { user = JSON.parse(localStorage.getItem('user')); } catch { navigate('/'); return; }
         if (!user || !user.isAdmin) { navigate('/'); return; }
         fetchItems();
+        fetchOrders();
     }, [navigate]);
+
+    const fetchOrders = () => {
+        setOrdersLoading(true);
+        fetch(`${API_URL}/api/orders/all`)
+            .then(res => res.json())
+            .then(data => { setOrders(Array.isArray(data) ? data : []); setOrdersLoading(false); })
+            .catch(() => setOrdersLoading(false));
+    };
+
+    const updateStatus = async (id, status) => {
+        try {
+            const res = await fetch(`${API_URL}/api/orders/${id}/status`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status })
+            });
+            if (res.ok) fetchOrders();
+        } catch { }
+    };
 
     const fetchItems = () => {
         fetch(`${API_URL}/api/items`)
@@ -56,6 +81,8 @@ const Admin = () => {
             formData.append('ingredients', ingredients);
             formData.append('type', type);
             formData.append('isChefSpecial', isChefSpecial);
+            formData.append('prepTime', prepTime);
+            formData.append('deliveryTime', deliveryTime);
             if (image) formData.append('image', image);
 
             const url = editingId ? `${API_URL}/api/items/${editingId}` : `${API_URL}/api/items`;
@@ -95,6 +122,8 @@ const Admin = () => {
         setIngredients(item.ingredients || '');
         setType(item.type || 'veg');
         setIsChefSpecial(item.isChefSpecial || false);
+        setPrepTime(item.prepTime || 15);
+        setDeliveryTime(item.deliveryTime || 30);
         setImage(null);
         setImagePreview(null);
         setEditingImage(item.image || '');
@@ -105,6 +134,7 @@ const Admin = () => {
         setEditingId(null);
         setName(''); setDescription(''); setPrice(''); setIngredients('');
         setType('veg'); setIsChefSpecial(false);
+        setPrepTime(15); setDeliveryTime(30);
         setImage(null); setImagePreview(null); setEditingImage('');
         const input = document.getElementById('imageInput');
         if (input) input.value = '';
@@ -116,46 +146,72 @@ const Admin = () => {
     const specialCount = items.filter(i => i.isChefSpecial).length;
 
     return (
-        <div className="min-h-screen" style={{ backgroundColor: '#fff5f0' }}>
+        <div className="min-h-[85vh] relative z-10 px-4 sm:px-6">
+            {/* Ambient glows removed based on user feedback */}
+
             {/* Header */}
-            <div className="bg-gradient-to-r from-orange-600 to-red-600 text-white px-4 sm:px-8 py-6 shadow-lg">
-                <div className="max-w-7xl mx-auto">
-                    <div className="mb-4">
-                        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Admin Panel</h1>
-                        <p className="text-orange-100 text-sm mt-0.5">Owen Express — Menu Management</p>
+            <div className="bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-[2rem] px-6 sm:px-10 py-10 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] relative overflow-hidden my-6 border border-gray-700">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-red-500/20 rounded-full blur-[80px]"></div>
+                <div className="max-w-7xl mx-auto relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+                    <div>
+                        <h1 className="text-3xl sm:text-5xl font-black tracking-tight mb-2 relative inline-block">
+                            Admin <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-400">Panel</span>
+                            <div className="absolute -bottom-1 left-1/4 right-1/4 h-1 bg-gradient-to-r from-transparent via-red-500 to-transparent opacity-50 rounded-full"></div>
+                        </h1>
+                        <p className="text-gray-400 font-medium mt-1">Owen Express — Menu & Order Management</p>
                     </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        <div className="bg-white/20 rounded-xl px-3 sm:px-5 py-2.5 text-center">
-                            <div className="text-xl sm:text-2xl font-bold">{items.length}</div>
-                            <div className="text-xs text-orange-100">Total Items</div>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full md:w-auto">
+                        <div className="bg-white/10 backdrop-blur-md rounded-2xl px-5 py-4 text-center border border-white/10 shadow-inner">
+                            <div className="text-2xl sm:text-3xl font-black text-white">{items.length}</div>
+                            <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mt-1">Items</div>
                         </div>
-                        <div className="bg-white/20 rounded-xl px-3 sm:px-5 py-2.5 text-center">
-                            <div className="text-xl sm:text-2xl font-bold text-green-300">{vegCount}</div>
-                            <div className="text-xs text-orange-100">Veg</div>
+                        <div className="bg-white/10 backdrop-blur-md rounded-2xl px-5 py-4 text-center border border-white/10 shadow-inner">
+                            <div className="text-2xl sm:text-3xl font-black text-green-400">{vegCount}</div>
+                            <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mt-1">Veg</div>
                         </div>
-                        <div className="bg-white/20 rounded-xl px-3 sm:px-5 py-2.5 text-center">
-                            <div className="text-xl sm:text-2xl font-bold text-red-200">{nonVegCount}</div>
-                            <div className="text-xs text-orange-100">Non-Veg</div>
+                        <div className="bg-white/10 backdrop-blur-md rounded-2xl px-5 py-4 text-center border border-white/10 shadow-inner">
+                            <div className="text-2xl sm:text-3xl font-black text-red-400">{nonVegCount}</div>
+                            <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mt-1">Non-Veg</div>
                         </div>
-                        <div className="bg-white/20 rounded-xl px-3 sm:px-5 py-2.5 text-center">
-                            <div className="text-xl sm:text-2xl font-bold text-yellow-300">{specialCount}</div>
-                            <div className="text-xs text-orange-100">Specials</div>
+                        <div className="bg-white/10 backdrop-blur-md rounded-2xl px-5 py-4 text-center border border-white/10 shadow-inner">
+                            <div className="text-2xl sm:text-3xl font-black text-orange-400">{specialCount}</div>
+                            <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mt-1">Specials</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col lg:flex-row gap-8 items-start">
+            {/* Tabs */}
+            <div className="max-w-7xl mx-auto pt-4 mb-6 relative z-20">
+                <div className="flex gap-2 bg-white/80 backdrop-blur-xl rounded-2xl p-2 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white w-fit mx-auto sm:mx-0">
+                    <button onClick={() => setActiveTab('menu')}
+                        className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black tracking-wide transition-all duration-300 ${activeTab === 'menu' ? 'bg-gradient-to-r from-red-600 to-orange-500 text-white shadow-[0_8px_20px_-6px_rgba(220,38,38,0.5)]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'}`}>
+                        <FaUtensils size={14} /> Menu Items
+                    </button>
+                    <button onClick={() => { setActiveTab('orders'); fetchOrders(); }}
+                        className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black tracking-wide transition-all duration-300 ${activeTab === 'orders' ? 'bg-gradient-to-r from-red-600 to-orange-500 text-white shadow-[0_8px_20px_-6px_rgba(220,38,38,0.5)]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'}`}>
+                        <FaShoppingBag size={14} /> Orders
+                        {orders.filter(o => o.status === 'pending').length > 0 && (
+                            <span className={`text-[10px] rounded-full w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm transition-all ${activeTab === 'orders' ? 'bg-white text-red-600' : 'bg-red-500 text-white'}`}>
+                                {orders.filter(o => o.status === 'pending').length}
+                            </span>
+                        )}
+                    </button>
+                </div>
+            </div>
+
+            <div className="max-w-7xl mx-auto pb-12 flex flex-col lg:flex-row gap-8 items-start relative z-20">
+                {activeTab === 'menu' ? (<>
                 {/* Form Panel */}
-                <div className="w-full lg:w-96 lg:flex-shrink-0 lg:sticky lg:top-6">
-                    <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-                        <div className={`px-6 py-4 flex items-center justify-between ${editingId ? 'bg-blue-600' : 'bg-gradient-to-r from-orange-500 to-red-500'}`}>
-                            <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                                {editingId ? <><FaEdit size={16} /> Edit Item</> : <><FaPlus size={16} /> Add New Item</>}
+                <div className="w-full lg:w-96 lg:flex-shrink-0 lg:sticky lg:top-32">
+                    <div className="bg-white/80 backdrop-blur-xl rounded-[2rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-white overflow-hidden transition-all">
+                        <div className={`px-8 py-6 flex items-center justify-between border-b border-gray-100 ${editingId ? 'bg-blue-50/50' : 'bg-transparent'}`}>
+                            <h2 className="text-xl font-black text-gray-900 flex items-center gap-3">
+                                {editingId ? <><span className="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shadow-sm"><FaEdit size={14} /></span> Edit Item</> : <><span className="w-8 h-8 rounded-xl bg-red-100 text-red-600 flex items-center justify-center shadow-sm"><FaPlus size={14} /></span> Add New Item</>}
                             </h2>
                             {editingId && (
-                                <button onClick={resetForm} className="text-white/80 hover:text-white transition-colors">
-                                    <FaTimes size={18} />
+                                <button onClick={resetForm} className="w-8 h-8 rounded-xl bg-gray-100 text-gray-500 flex items-center justify-center hover:bg-red-100 hover:text-red-500 transition-all">
+                                    <FaTimes size={14} />
                                 </button>
                             )}
                         </div>
@@ -203,6 +259,20 @@ const Admin = () => {
                                     </span>
                                 </label>
 
+                                {/* Prep & Delivery Time */}
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label className="text-xs font-bold text-gray-500 mb-1 block">Prep Time (mins)</label>
+                                        <input type="number" min="1" max="120" value={prepTime} onChange={e => setPrepTime(e.target.value)}
+                                            className="w-full px-3 py-2.5 border-2 border-gray-100 rounded-xl text-sm focus:border-orange-400 focus:outline-none bg-gray-50 focus:bg-white transition-all" />
+                                    </div>
+                                    <div>
+                                        <label className="text-xs font-bold text-gray-500 mb-1 block">Delivery Time (mins)</label>
+                                        <input type="number" min="1" max="120" value={deliveryTime} onChange={e => setDeliveryTime(e.target.value)}
+                                            className="w-full px-3 py-2.5 border-2 border-gray-100 rounded-xl text-sm focus:border-orange-400 focus:outline-none bg-gray-50 focus:bg-white transition-all" />
+                                    </div>
+                                </div>
+
                                 {/* Image Upload */}
                                 <div className={`border-2 border-dashed rounded-xl overflow-hidden transition-colors ${currentPreview ? 'border-orange-300' : 'border-gray-200 hover:border-orange-300'}`}>
                                     {currentPreview ? (
@@ -237,18 +307,19 @@ const Admin = () => {
 
                 {/* Items Grid */}
                 <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-5">
-                        <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                            <FaUtensils className="text-orange-500" /> Menu Items
-                            <span className="text-sm font-normal text-gray-400 ml-1">({items.length})</span>
+                    <div className="flex items-center justify-between mb-8">
+                        <h2 className="text-2xl font-black text-gray-900 flex items-center gap-3 tracking-tight">
+                            <span className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 to-orange-500 text-white flex items-center justify-center shadow-lg"><FaUtensils size={18} /></span> 
+                            Menu Items
+                            <span className="text-sm font-bold text-gray-400 bg-white shadow-sm border border-gray-100 px-3 py-1 rounded-lg ml-2">{items.length}</span>
                         </h2>
                     </div>
 
                     {items.length === 0 ? (
-                        <div className="text-center py-20 text-gray-400">
-                            <FaUtensils size={48} className="mx-auto mb-4 opacity-30" />
-                            <p className="text-lg font-medium">No items yet</p>
-                            <p className="text-sm">Add your first menu item using the form</p>
+                        <div className="text-center py-20 bg-white/50 backdrop-blur-md rounded-[2rem] border border-white/50 shadow-sm relative overflow-hidden">
+                            <FaUtensils size={56} className="mx-auto mb-6 text-gray-300 drop-shadow-sm" />
+                            <p className="text-xl font-black text-gray-500 tracking-tight mb-2">No items yet</p>
+                            <p className="text-gray-400 font-medium">Add your first menu item using the form</p>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
@@ -300,6 +371,112 @@ const Admin = () => {
                         </div>
                     )}
                 </div>
+            </>) : (
+                /* Orders Tab */
+                <div className="w-full">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+                        <h2 className="text-2xl font-black text-gray-900 flex items-center gap-3 tracking-tight">
+                            <span className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 to-orange-500 text-white flex items-center justify-center shadow-lg"><FaShoppingBag size={18} /></span> 
+                            Incoming Orders
+                        </h2>
+                        <button onClick={fetchOrders} className="px-5 py-2.5 bg-white border border-white/50 shadow-[0_4px_15px_rgb(0,0,0,0.04)] rounded-xl text-sm text-gray-600 font-bold hover:text-red-600 hover:border-red-200 hover:shadow-md transition-all flex items-center gap-2">↻ Refresh List</button>
+                    </div>
+                    {ordersLoading ? (
+                        <div className="text-center py-32 bg-white/50 backdrop-blur-md rounded-[2rem] border border-white/50 shadow-sm">
+                            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-red-200 border-t-red-600 shadow-sm"></div>
+                            <p className="mt-4 font-bold text-gray-500 tracking-wide">Fetching incoming orders...</p>
+                        </div>
+                    ) : orders.length === 0 ? (
+                        <div className="text-center py-32 bg-white/50 backdrop-blur-md rounded-[2rem] border border-white/50 shadow-sm relative overflow-hidden">
+                            <FaShoppingBag size={56} className="mx-auto mb-6 text-gray-300 drop-shadow-sm" />
+                            <p className="text-xl font-black text-gray-500 tracking-tight mb-2">No orders yet</p>
+                            <p className="text-gray-400 font-medium">Waiting for hungry customers to place an order</p>
+                        </div>
+                    ) : (
+                        <div className="space-y-4">
+                            {orders.map(order => (
+                                <div key={order._id} className={`bg-white rounded-2xl p-5 shadow-md border-2 transition-all ${
+                                    order.status === 'pending' ? 'border-yellow-300' :
+                                    order.status === 'accepted' || order.status === 'preparing' || order.status === 'out_for_delivery' ? 'border-green-300' :
+                                    order.status === 'rejected' ? 'border-red-300' : 'border-gray-100'
+                                }`}>
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                                        <div>
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <h3 className="font-bold text-gray-800">{order.name}</h3>
+                                                <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${
+                                                    order.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                                                    order.status === 'accepted' ? 'bg-blue-100 text-blue-700' :
+                                                    order.status === 'preparing' ? 'bg-orange-100 text-orange-700' :
+                                                    order.status === 'out_for_delivery' ? 'bg-purple-100 text-purple-700' :
+                                                    order.status === 'delivered' ? 'bg-green-100 text-green-700' :
+                                                    'bg-red-100 text-red-700'
+                                                }`}>{order.status.replace('_', ' ').toUpperCase()}</span>
+                                            </div>
+                                            <p className="text-xs text-gray-400">{order.email} • {order.phone}</p>
+                                            <p className="text-xs text-gray-400">{order.address}</p>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-xl font-black text-red-600">₹{order.total}</p>
+                                            <p className="text-xs text-gray-400 uppercase">{order.paymentMethod}</p>
+                                            <p className="text-xs text-gray-400">{new Date(order.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Items */}
+                                    <div className="bg-gray-50 rounded-xl p-3 mb-4">
+                                        {order.cart?.map((item, i) => (
+                                            <div key={i} className="flex justify-between text-sm py-1">
+                                                <span className="text-gray-600">{item.name} {item.quantity > 1 && `x${item.quantity}`}</span>
+                                                <span className="font-semibold">₹{item.price * (item.quantity || 1)}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {/* Action Buttons */}
+                                    {order.status === 'pending' && (
+                                        <div className="flex gap-3">
+                                            <button onClick={() => updateStatus(order._id, 'accepted')}
+                                                className="flex-1 py-2.5 bg-green-500 text-white rounded-xl font-bold text-sm hover:bg-green-600 transition-all flex items-center justify-center gap-2">
+                                                <FaCheck size={12} /> Accept Order
+                                            </button>
+                                            <button onClick={() => updateStatus(order._id, 'rejected')}
+                                                className="flex-1 py-2.5 bg-red-500 text-white rounded-xl font-bold text-sm hover:bg-red-600 transition-all flex items-center justify-center gap-2">
+                                                <FaBan size={12} /> Reject Order
+                                            </button>
+                                        </div>
+                                    )}
+                                    {order.status === 'accepted' && (
+                                        <button onClick={() => updateStatus(order._id, 'preparing')}
+                                            className="w-full py-2.5 bg-orange-500 text-white rounded-xl font-bold text-sm hover:bg-orange-600 transition-all flex items-center justify-center gap-2">
+                                            <FaUtensils size={12} /> Start Preparing
+                                        </button>
+                                    )}
+                                    {order.status === 'preparing' && (
+                                        <button onClick={() => updateStatus(order._id, 'out_for_delivery')}
+                                            className="w-full py-2.5 bg-purple-500 text-white rounded-xl font-bold text-sm hover:bg-purple-600 transition-all flex items-center justify-center gap-2">
+                                            🏍️ Mark Out for Delivery
+                                        </button>
+                                    )}
+                                    {order.status === 'out_for_delivery' && (
+                                        <button onClick={() => updateStatus(order._id, 'delivered')}
+                                            className="w-full py-2.5 bg-green-600 text-white rounded-xl font-bold text-sm hover:bg-green-700 transition-all flex items-center justify-center gap-2">
+                                            <FaCheck size={12} /> Mark Delivered
+                                        </button>
+                                    )}
+                                    {(order.status === 'delivered' || order.status === 'rejected') && (
+                                        <div className={`text-center py-2 rounded-xl text-sm font-bold ${
+                                            order.status === 'delivered' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'
+                                        }`}>
+                                            {order.status === 'delivered' ? '✓ Order Delivered' : '✕ Order Rejected'}
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
             </div>
         </div>
     );

@@ -6,6 +6,10 @@
 
 * { box-sizing: border-box; }
 
+html {
+  font-size: 14px; /* Scaled down base font size to minimize the UI globally */
+}
+
 body {
   font-family: 'Inter', sans-serif;
   background: #fff5f0;
@@ -14,7 +18,14 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-::-webkit-scrollbar { width: 6px; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
 ::-webkit-scrollbar-track { background: #f1f1f1; }
 ::-webkit-scrollbar-thumb { background: #aaaaaa; border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: #888888; }
