@@ -4,7 +4,7 @@ import { FaEnvelope, FaLock, FaUtensils } from 'react-icons/fa';
 import { API_URL } from '../config';
 import { signInWithGoogle } from '../firebase';
 
-const Login = ({ setIsLoggedIn, setIsAdmin }) => {
+const Login = ({ setIsLoggedIn, setIsAdmin, setUserName }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -33,7 +33,10 @@ const Login = ({ setIsLoggedIn, setIsAdmin }) => {
             if (res.ok) {
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('user', JSON.stringify(data.user));
-                window.location.href = '/';
+                setIsLoggedIn(true);
+                setIsAdmin(data.user.isAdmin || false);
+                setUserName(data.user.name);
+                navigate(data.user.isAdmin ? '/admin' : '/');
             } else {
                 setError(data.message || 'Google login failed');
             }
@@ -61,6 +64,7 @@ const Login = ({ setIsLoggedIn, setIsAdmin }) => {
                 localStorage.setItem('user', JSON.stringify(data.user));
                 setIsLoggedIn(true);
                 setIsAdmin(data.user.isAdmin || false);
+                setUserName(data.user.name);
                 navigate(data.user.isAdmin ? '/admin' : '/');
             } else {
                 setError(data.message || 'Login failed');

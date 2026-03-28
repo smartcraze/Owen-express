@@ -22,7 +22,7 @@ const ItemList = ({ items, addToCart, removeFromCart, cart = [] }) => {
                                 {/* Image */}
                                 <div className="relative w-full h-52 shrink-0 overflow-hidden bg-gray-50/50">
                                     {item.image
-                                        ? <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out" />
+                                        ? <img src={item.image.includes('cloudinary.com') ? item.image.replace('/upload/', '/upload/w_800,q_auto,f_auto/') : item.image} alt={item.name} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out" />
                                         : <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm font-medium bg-gradient-to-br from-gray-100 to-gray-200/50">No Image</div>
                                     }
                                     {/* Overlay gradient */}

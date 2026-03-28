@@ -4,7 +4,7 @@ import { FaUser, FaEnvelope, FaLock, FaUtensils } from 'react-icons/fa';
 import { API_URL } from '../config';
 import { signInWithGoogle } from '../firebase';
 
-const Signup = ({ setIsLoggedIn, setIsAdmin }) => {
+const Signup = ({ setIsLoggedIn, setIsAdmin, setUserName }) => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -37,6 +37,7 @@ const Signup = ({ setIsLoggedIn, setIsAdmin }) => {
                 localStorage.setItem('user', JSON.stringify(data.user));
                 setIsLoggedIn(true);
                 setIsAdmin(data.user.isAdmin || false);
+                setUserName(data.user.name);
                 navigate('/');
             } else {
                 setError(data.message || 'Google signup failed');
@@ -52,7 +53,10 @@ const Signup = ({ setIsLoggedIn, setIsAdmin }) => {
         e.preventDefault();
         setError(''); setSuccess('');
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setError('Please enter a valid email address');
-        if (password.length < 6) return setError('Password must be at least 6 characters long');
+        if (password.length < 8) return setError('Password must be at least 8 characters long');
+        if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/.test(password)) {
+            return setError('Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (!@#$%^&*)');
+        }
         setLoading(true);
         try {
             const res = await fetch(`${API_URL}/api/users/signup`, {
@@ -62,8 +66,12 @@ const Signup = ({ setIsLoggedIn, setIsAdmin }) => {
             });
             const data = await res.json();
             if (res.ok) {
-                setSuccess('Account created! Redirecting to login...');
-                setTimeout(() => navigate('/login'), 1500);
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user', JSON.stringify(data.user));
+                setIsLoggedIn(true);
+                setIsAdmin(data.user.isAdmin || false);
+                setUserName(data.user.name);
+                navigate('/');
             } else {
                 setError(data.message || 'Signup failed');
             }
