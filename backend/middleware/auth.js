@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const SECRET = process.env.JWT_SECRET;
+const SECRET = process.env.JWT_SECRET || 'fallback_jwt_secret_key_123';
 
 exports.generateToken = (userId) => jwt.sign({ id: userId }, SECRET, { expiresIn: '7d' });
 
