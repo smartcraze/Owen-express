@@ -14,7 +14,7 @@ import OrderHistory from './pages/OrderHistory';
 import OrderTracking from './pages/OrderTracking';
 import ProtectedRoute from './components/ProtectedRoute';
 
-function Header({ cartCount, isLoggedIn, onLogout, userName }) {
+function Header({ cartCount, isLoggedIn, onLogout, userName, isAdmin }) {
     const nav = useNavigate();
     const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
@@ -45,8 +45,14 @@ function Header({ cartCount, isLoggedIn, onLogout, userName }) {
                         <>
                             <button className="relative bg-transparent border-none text-sm font-bold text-gray-600 cursor-pointer px-5 py-2.5 rounded-xl hover:text-red-600 hover:bg-red-50/50 hover:backdrop-blur-md hover:shadow-sm transition-all duration-200" onClick={() => go('/')}>Home</button>
                             <button className="relative bg-transparent border-none text-sm font-bold text-gray-600 cursor-pointer px-5 py-2.5 rounded-xl hover:text-red-600 hover:bg-red-50/50 hover:backdrop-blur-md hover:shadow-sm transition-all duration-200" onClick={() => go('/menu')}>Menu</button>
-                            <button className="relative bg-transparent border-none text-sm font-bold text-gray-600 cursor-pointer px-5 py-2.5 rounded-xl hover:text-red-600 hover:bg-red-50/50 hover:backdrop-blur-md hover:shadow-sm transition-all duration-200" onClick={() => go('/orders')}>My Orders</button>
-                            <button className="relative bg-transparent border-none text-sm font-bold text-gray-600 cursor-pointer px-5 py-2.5 rounded-xl hover:text-red-600 hover:bg-red-50/50 hover:backdrop-blur-md hover:shadow-sm transition-all duration-200" onClick={() => go('/track')}>Track Order</button>
+                            {isAdmin ? (
+                                <button className="relative bg-transparent border-none text-sm font-bold text-red-600 cursor-pointer px-5 py-2.5 rounded-xl hover:text-red-700 hover:bg-red-100/50 hover:backdrop-blur-md hover:shadow-sm transition-all duration-200" onClick={() => go('/admin')}>Admin Control</button>
+                            ) : (
+                                <>
+                                    <button className="relative bg-transparent border-none text-sm font-bold text-gray-600 cursor-pointer px-5 py-2.5 rounded-xl hover:text-red-600 hover:bg-red-50/50 hover:backdrop-blur-md hover:shadow-sm transition-all duration-200" onClick={() => go('/orders')}>My Orders</button>
+                                    <button className="relative bg-transparent border-none text-sm font-bold text-gray-600 cursor-pointer px-5 py-2.5 rounded-xl hover:text-red-600 hover:bg-red-50/50 hover:backdrop-blur-md hover:shadow-sm transition-all duration-200" onClick={() => go('/track')}>Track Order</button>
+                                </>
+                            )}
                             <button className="relative bg-transparent border-none text-sm font-bold text-gray-600 cursor-pointer px-5 py-2.5 rounded-xl hover:text-red-600 hover:bg-red-50/50 hover:backdrop-blur-md hover:shadow-sm transition-all duration-200" onClick={() => go('/search')}><FaSearch className="text-base" /></button>
                             <button className="relative bg-white border border-gray-100 shadow-sm text-sm font-bold text-gray-900 cursor-pointer px-5 py-2.5 rounded-xl hover:text-red-600 hover:shadow-md hover:-translate-y-0.5 transition-all flex items-center gap-2 group ml-2" onClick={() => go('/order-summary')}>
                                 {cartCount > 0 && (
@@ -91,8 +97,14 @@ function Header({ cartCount, isLoggedIn, onLogout, userName }) {
                         <>
                             <button className="text-left px-5 py-4 rounded-xl text-gray-800 font-bold hover:bg-red-50 hover:text-red-600 transition-all flex items-center gap-3" onClick={() => go('/')}><span className="text-gray-400"><FaHome /></span> Home</button>
                             <button className="text-left px-5 py-4 rounded-xl text-gray-800 font-bold hover:bg-red-50 hover:text-red-600 transition-all flex items-center gap-3" onClick={() => go('/menu')}><span className="text-gray-400"><FaUtensils /></span> Menu</button>
-                            <button className="text-left px-5 py-4 rounded-xl text-gray-800 font-bold hover:bg-red-50 hover:text-red-600 transition-all flex items-center gap-3" onClick={() => go('/orders')}><span className="text-gray-400"><FaBoxOpen /></span> My Orders</button>
-                            <button className="text-left px-5 py-4 rounded-xl text-gray-800 font-bold hover:bg-red-50 hover:text-red-600 transition-all flex items-center gap-3" onClick={() => go('/track')}><span className="text-gray-400"><FaMapMarkerAlt /></span> Track Order</button>
+                            {isAdmin ? (
+                                <button className="text-left px-5 py-4 rounded-xl text-red-600 font-bold hover:bg-red-50 transition-all flex items-center gap-3" onClick={() => go('/admin')}><span className="text-red-400"><FaKey /></span> Admin Control</button>
+                            ) : (
+                                <>
+                                    <button className="text-left px-5 py-4 rounded-xl text-gray-800 font-bold hover:bg-red-50 hover:text-red-600 transition-all flex items-center gap-3" onClick={() => go('/orders')}><span className="text-gray-400"><FaBoxOpen /></span> My Orders</button>
+                                    <button className="text-left px-5 py-4 rounded-xl text-gray-800 font-bold hover:bg-red-50 hover:text-red-600 transition-all flex items-center gap-3" onClick={() => go('/track')}><span className="text-gray-400"><FaMapMarkerAlt /></span> Track Order</button>
+                                </>
+                            )}
                             <button className="text-left px-5 py-4 rounded-xl text-gray-800 font-bold hover:bg-red-50 hover:text-red-600 transition-all flex items-center gap-3" onClick={() => go('/search')}><span className="text-gray-400"><FaSearch /></span> Search</button>
                             <div className="h-[1px] bg-gray-100 my-2"></div>
                             <button className="mt-2 px-5 py-4 text-center font-black text-red-600 bg-red-50 border border-red-100 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm" onClick={() => { onLogout(); setMenuOpen(false); }}>Logout</button>
@@ -141,6 +153,7 @@ function App() {
         }
     });
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
     const [loading, setLoading] = useState(true);
     const [userName, setUserName] = useState('');
 
@@ -160,6 +173,7 @@ function App() {
                         localStorage.setItem('user', JSON.stringify(data.user));
                         setUserName(data.user.name);
                         setIsLoggedIn(true);
+                        setIsAdmin(data.user.isAdmin || false);
                     } else {
                         localStorage.removeItem('token');
                         localStorage.removeItem('user');
@@ -179,6 +193,7 @@ function App() {
     const clearCart = () => setCart([]);
     const handleLogout = () => {
         setIsLoggedIn(false);
+        setIsAdmin(false);
         setCart([]);
         ['token', 'user', 'cart'].forEach(k => localStorage.removeItem(k));
         window.location.href = '/';
@@ -201,7 +216,7 @@ function App() {
                 {/* Global subtle textures */}
                 <div className="fixed inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.02] mix-blend-overlay pointer-events-none z-[-1]"></div>
                 
-                <Header cartCount={cart.length} isLoggedIn={isLoggedIn} onLogout={handleLogout} userName={userName} />
+                <Header cartCount={cart.length} isLoggedIn={isLoggedIn} onLogout={handleLogout} userName={userName} isAdmin={isAdmin} />
                 
                 <main className="flex-1 p-4 sm:p-8 max-w-7xl mx-auto w-full mt-28 relative z-10">
                     <AnimatedRoutes cart={cart} setCart={setCart} removeFromCart={removeFromCart} clearCart={clearCart} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
