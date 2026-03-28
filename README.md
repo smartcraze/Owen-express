@@ -22,7 +22,7 @@
 
 <br/>
 
-**Owen Express** is a god-tier, production-grade MERN stack restaurant management and food delivery application. Engineered from the ground up for maximum performance and visual excellence, it bridges the gap between hungry customers and efficient kitchen management through a stunning glassmorphic interface and a lightning-fast Node.js backend.
+**Owen Express** is a  production-grade MERN stack restaurant management and food delivery application. Engineered from the ground up for maximum performance and visual excellence, it bridges the gap between hungry customers and efficient kitchen management through a stunning glassmorphic interface and a lightning-fast Node.js backend.
 
 </div>
 
@@ -66,7 +66,7 @@ Instead of forcing users to remember a new set of credentials, Owen Express util
 Handling static image assets locally on a basic server leads to massive performance bottlenecks. Owen Express completely offloads this using **Cloudinary**:
 - **Real-time Image Uploads:** When an Admin adds a new high-res food image, the Node.js backend intercepts the `multipart/form-data` using **Multer**.
 - **multer-storage-cloudinary:** Automatically pipelines the payload straight to a Cloudinary CDN cluster.
-- **Instant Delivery:** The database simply saves the optimized `.webp / .jpg` secure URL, which serves images globally at edge-speeds, ensuring the UI remains blazing fast regardless of menu size.
+- **Instant Delivery:** The database simply saves the optimized `.webp / .jpg` secure URL, which serves images globally at edge-speeds, ensuring the UI remains optimized regardless of menu size.
 
 ---
 
@@ -121,7 +121,7 @@ A dark-mode, highly specialized workspace completely isolated from regular user 
 
 ## ⚙️ Local Development Setup
 
-Wanna run this masterpiece locally? Follow these steps exactly.
+Wanna run this locally? Follow these steps exactly.
 
 ### Prerequisites
 - Node.js (v16+)
