@@ -63,7 +63,7 @@ exports.getOrderStatus = async (req, res) => {
     }
 };
 
-exports.submitRating = async (req, res) => {
+exports.rateOrder = async (req, res) => {
     try {
         const { rating, review } = req.body;
         if (!rating || rating < 1 || rating > 5) return res.status(400).json({ error: 'Rating must be between 1 and 5' });
