@@ -124,14 +124,14 @@ function Header({ cartCount, isLoggedIn, onLogout, userName, isAdmin }) {
     );
 }
 
-function AnimatedRoutes({ cart, setCart, removeFromCart, clearCart, isLoggedIn, setIsLoggedIn }) {
+function AnimatedRoutes({ cart, setCart, removeFromCart, clearCart, isLoggedIn, setIsLoggedIn, setIsAdmin }) {
     const location = useLocation();
     return (
         <div key={location.pathname} className="animate-fadeIn">
             <Routes location={location}>
                 <Route path="/" element={<Showcase isLoggedIn={isLoggedIn} />} />
-                <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
-                <Route path="/signup" element={<Signup />} />
+                <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setIsAdmin={setIsAdmin} />} />
+                <Route path="/signup" element={<Signup setIsLoggedIn={setIsLoggedIn} setIsAdmin={setIsAdmin} />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/search" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Search cart={cart} setCart={setCart} /></ProtectedRoute>} />
                 <Route path="/orders" element={<ProtectedRoute isLoggedIn={isLoggedIn}><OrderHistory /></ProtectedRoute>} />
@@ -221,7 +221,7 @@ function App() {
                 <Header cartCount={cart.length} isLoggedIn={isLoggedIn} onLogout={handleLogout} userName={userName} isAdmin={isAdmin} />
                 
                 <main className="flex-1 p-4 sm:p-8 max-w-7xl mx-auto w-full mt-28 relative z-10">
-                    <AnimatedRoutes cart={cart} setCart={setCart} removeFromCart={removeFromCart} clearCart={clearCart} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+                    <AnimatedRoutes cart={cart} setCart={setCart} removeFromCart={removeFromCart} clearCart={clearCart} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} setIsAdmin={setIsAdmin} />
                 </main>
 
                 <footer className="bg-gray-950 text-white pt-20 pb-12 px-8 mt-auto relative overflow-hidden border-t border-gray-800">

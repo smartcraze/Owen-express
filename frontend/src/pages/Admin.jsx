@@ -152,54 +152,68 @@ const Admin = () => {
     const specialCount = items.filter(i => i.isChefSpecial).length;
 
     return (
-        <div className="min-h-[85vh] relative z-10 px-4 sm:px-6">
-            {/* Ambient glows removed based on user feedback */}
-
-            {/* Header */}
-            <div className="bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-[2rem] px-6 sm:px-10 py-10 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] relative overflow-hidden my-6 border border-gray-700">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-red-500/20 rounded-full blur-[80px]"></div>
-                <div className="max-w-7xl mx-auto relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
-                    <div>
-                        <h1 className="text-3xl sm:text-5xl font-black tracking-tight mb-2 relative inline-block">
-                            Admin <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-400">Panel</span>
-                            <div className="absolute -bottom-1 left-1/4 right-1/4 h-1 bg-gradient-to-r from-transparent via-red-500 to-transparent opacity-50 rounded-full"></div>
-                        </h1>
-                        <p className="text-gray-400 font-medium mt-1">Owen Express — Menu & Order Management</p>
+        <div className="min-h-[85vh] relative z-10 px-0 sm:px-2">
+            
+            {/* Professional Admin Header */}
+            <div className="bg-[#0B0F19] text-white rounded-[2.5rem] p-8 sm:p-10 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.7)] relative overflow-hidden my-6 border border-gray-800/60">
+                {/* Premium Abstract Glows */}
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-red-600/15 to-orange-500/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
+                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-600/10 rounded-full blur-[100px] translate-y-1/3 -translate-x-1/3 pointer-events-none"></div>
+                
+                <div className="max-w-7xl mx-auto relative z-10 flex flex-col xl:flex-row items-start xl:items-center justify-between gap-10">
+                    <div className="flex items-center gap-6">
+                        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-[1.25rem] bg-gradient-to-br from-red-600 to-orange-500 flex items-center justify-center shadow-lg shadow-red-600/30 border border-red-400/30">
+                            <FaUtensils className="text-white text-2xl sm:text-3xl drop-shadow-md" />
+                        </div>
+                        <div>
+                            <h1 className="text-3xl sm:text-5xl font-black tracking-tight mb-2 text-white flex items-center gap-3">
+                                Admin <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400">Portal</span>
+                            </h1>
+                            <div className="flex items-center gap-3 text-sm">
+                                <span className="flex items-center gap-2 bg-green-500/10 text-green-400 font-bold px-3 py-1 rounded-full border border-green-500/20">
+                                    <span className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.8)] animate-pulse"></span>
+                                    System Online
+                                </span>
+                                <span className="text-gray-400 font-medium">Owen Express Live Management</span>
+                            </div>
+                        </div>
                     </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full md:w-auto">
-                        <div className="bg-white/10 backdrop-blur-md rounded-2xl px-5 py-4 text-center border border-white/10 shadow-inner">
-                            <div className="text-2xl sm:text-3xl font-black text-white">{items.length}</div>
-                            <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mt-1">Items</div>
+                    
+                    {/* Modern Stats Cards */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full xl:w-auto">
+                        <div className="bg-gray-800/40 backdrop-blur-xl rounded-2xl p-5 border border-gray-700/50 shadow-inner group hover:bg-gray-800/60 transition-all">
+                            <div className="text-gray-400 text-xs font-black uppercase tracking-widest mb-1 group-hover:text-gray-300 transition-colors">Total Items</div>
+                            <div className="text-4xl font-black text-white">{items.length}</div>
                         </div>
-                        <div className="bg-white/10 backdrop-blur-md rounded-2xl px-5 py-4 text-center border border-white/10 shadow-inner">
-                            <div className="text-2xl sm:text-3xl font-black text-green-400">{vegCount}</div>
-                            <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mt-1">Veg</div>
+                        <div className="bg-gray-800/40 backdrop-blur-xl rounded-2xl p-5 border border-gray-700/50 shadow-inner group hover:bg-gray-800/60 transition-all">
+                            <div className="text-gray-400 text-xs font-black uppercase tracking-widest mb-1 group-hover:text-green-400/70 transition-colors">Veg Menu</div>
+                            <div className="text-4xl font-black text-green-400">{vegCount}</div>
                         </div>
-                        <div className="bg-white/10 backdrop-blur-md rounded-2xl px-5 py-4 text-center border border-white/10 shadow-inner">
-                            <div className="text-2xl sm:text-3xl font-black text-red-400">{nonVegCount}</div>
-                            <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mt-1">Non-Veg</div>
+                        <div className="bg-gray-800/40 backdrop-blur-xl rounded-2xl p-5 border border-gray-700/50 shadow-inner group hover:bg-gray-800/60 transition-all">
+                            <div className="text-gray-400 text-xs font-black uppercase tracking-widest mb-1 group-hover:text-red-400/70 transition-colors">Non-Veg</div>
+                            <div className="text-4xl font-black text-red-500">{nonVegCount}</div>
                         </div>
-                        <div className="bg-white/10 backdrop-blur-md rounded-2xl px-5 py-4 text-center border border-white/10 shadow-inner">
-                            <div className="text-2xl sm:text-3xl font-black text-orange-400">{specialCount}</div>
-                            <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mt-1">Specials</div>
+                        <div className="bg-gray-800/40 backdrop-blur-xl rounded-2xl p-5 border border-gray-700/50 shadow-inner group hover:bg-gray-800/60 transition-all">
+                            <div className="text-gray-400 text-xs font-black uppercase tracking-widest mb-1 group-hover:text-orange-400/70 transition-colors">Specials</div>
+                            <div className="text-4xl font-black text-orange-400">{specialCount}</div>
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Tabs */}
-            <div className="max-w-7xl mx-auto pt-4 mb-6 relative z-20">
-                <div className="flex gap-2 bg-white/80 backdrop-blur-xl rounded-2xl p-2 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white w-fit mx-auto sm:mx-0">
+            <div className="max-w-7xl mx-auto mb-8 relative z-20">
+                <div className="flex gap-3 bg-white/70 backdrop-blur-xl rounded-2xl p-2.5 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 w-fit mx-auto sm:mx-0">
                     <button onClick={() => setActiveTab('menu')}
-                        className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black tracking-wide transition-all duration-300 ${activeTab === 'menu' ? 'bg-gradient-to-r from-red-600 to-orange-500 text-white shadow-[0_8px_20px_-6px_rgba(220,38,38,0.5)]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'}`}>
-                        <FaUtensils size={14} /> Menu Items
+                        className={`flex items-center gap-2.5 px-6 py-3 rounded-xl text-sm font-black tracking-wide transition-all duration-300 ${activeTab === 'menu' ? 'bg-[#0B0F19] text-white shadow-md shadow-gray-900/20' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'}`}>
+                        <FaUtensils size={14} className={activeTab === 'menu' ? 'text-red-500' : ''} /> Menu Items
                     </button>
                     <button onClick={() => { setActiveTab('orders'); fetchOrders(); }}
-                        className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black tracking-wide transition-all duration-300 ${activeTab === 'orders' ? 'bg-gradient-to-r from-red-600 to-orange-500 text-white shadow-[0_8px_20px_-6px_rgba(220,38,38,0.5)]' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'}`}>
-                        <FaShoppingBag size={14} /> Orders
+                        className={`flex items-center gap-2.5 px-6 py-3 rounded-xl text-sm font-black tracking-wide transition-all duration-300 ${activeTab === 'orders' ? 'bg-[#0B0F19] text-white shadow-md shadow-gray-900/20' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'}`}>
+                        <FaShoppingBag size={14} className={activeTab === 'orders' ? 'text-orange-500' : ''} /> Orders
                         {orders.filter(o => o.status === 'pending').length > 0 && (
-                            <span className={`text-[10px] rounded-full w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm transition-all ${activeTab === 'orders' ? 'bg-white text-red-600' : 'bg-red-500 text-white'}`}>
-                                {orders.filter(o => o.status === 'pending').length}
+                            <span className={`text-[11px] rounded-full px-2 py-0.5 flex items-center justify-center border font-black shadow-sm transition-all ml-1 ${activeTab === 'orders' ? 'bg-red-500/20 text-red-400 border-red-500/30' : 'bg-red-500 text-white border-red-600'}`}>
+                                {orders.filter(o => o.status === 'pending').length} New
                             </span>
                         )}
                     </button>
