@@ -36,6 +36,9 @@ const OrderTracking = () => {
                 if (data.status) {
                     setRealStatus(data.status);
                     if (STATUS_TO_STAGE[data.status] !== undefined) setStage(STATUS_TO_STAGE[data.status]);
+                    if (data.prepTime || data.deliveryTime) {
+                        setEta(prev => prev > (data.prepTime + data.deliveryTime) ? (data.prepTime + data.deliveryTime) : prev);
+                    }
                 }
             } catch { }
         };
@@ -46,24 +49,12 @@ const OrderTracking = () => {
 
     useEffect(() => {
         if (!hasOrder) return;
-        let timeout;
-        const advance = (current) => {
-            if (current < STAGES.length - 1) {
-                timeout = setTimeout(() => {
-                    setStage(current + 1);
-                    advance(current + 1);
-                }, STAGES[current].duration);
-            }
-        };
-        advance(0);
-
-        // countdown ETA
         const etaInterval = setInterval(() => {
             setEta(prev => prev > 1 ? prev - 1 : 0);
         }, 60000);
 
-        return () => { clearTimeout(timeout); clearInterval(etaInterval); };
-    }, []);
+        return () => { clearInterval(etaInterval); };
+    }, [hasOrder]);
 
     const currentStage = STAGES[stage];
     const Icon = currentStage.icon;
@@ -233,7 +224,7 @@ const OrderTracking = () => {
 
             {/* Delivered CTA */}
             {delivered && (
-                <div className="bg-green-50 border-2 border-green-200 rounded-2xl p-6 text-center animate-fadeIn">
+                <div className="mt-8 bg-green-50 border-2 border-green-200 rounded-2xl p-6 text-center animate-fadeIn">
                     <h3 className="text-xl font-black text-green-700 mb-1">Order Delivered!</h3>
                     <p className="text-gray-500 text-sm mb-4">Hope you enjoyed your meal</p>
                     <div className="flex gap-3 justify-center">

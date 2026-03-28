@@ -35,10 +35,17 @@ exports.getAllOrders = async (req, res) => {
 
 exports.updateOrderStatus = async (req, res) => {
     try {
-        const { status } = req.body;
+        const { status, prepTime, deliveryTime } = req.body;
         const validStatuses = ['pending', 'accepted', 'rejected', 'preparing', 'out_for_delivery', 'delivered'];
         if (!validStatuses.includes(status)) return res.status(400).json({ error: 'Invalid status' });
-        const order = await Order.findByIdAndUpdate(req.params.id, { status }, { new: true });
+        
+        const updateData = { status };
+        if (status === 'accepted') {
+            if (prepTime !== undefined) updateData.prepTime = Number(prepTime);
+            if (deliveryTime !== undefined) updateData.deliveryTime = Number(deliveryTime);
+        }
+        
+        const order = await Order.findByIdAndUpdate(req.params.id, updateData, { new: true });
         if (!order) return res.status(404).json({ error: 'Order not found' });
         res.json({ message: 'Status updated', order });
     } catch {
@@ -55,6 +62,8 @@ exports.getOrderStatus = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch status' });
     }
 };
+
+exports.submitRating = async (req, res) => {
     try {
         const { rating, review } = req.body;
         if (!rating || rating < 1 || rating > 5) return res.status(400).json({ error: 'Rating must be between 1 and 5' });

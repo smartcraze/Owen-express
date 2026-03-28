@@ -22,6 +22,9 @@ const Admin = () => {
     const [editingImage, setEditingImage] = useState('');
     const [status, setStatus] = useState({ msg: '', ok: true });
     const [loading, setLoading] = useState(false);
+    const [acceptingOrder, setAcceptingOrder] = useState(null);
+    const [accPrepTime, setAccPrepTime] = useState(20);
+    const [accDeliveryTime, setAccDeliveryTime] = useState(30);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -40,12 +43,12 @@ const Admin = () => {
             .catch(() => setOrdersLoading(false));
     };
 
-    const updateStatus = async (id, status) => {
+    const updateStatus = async (id, status, extra = {}) => {
         try {
             const res = await fetch(`${API_URL}/api/orders/${id}/status`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status })
+                body: JSON.stringify({ status, ...extra })
             });
             if (res.ok) fetchOrders();
         } catch { }
@@ -435,16 +438,36 @@ const Admin = () => {
 
                                     {/* Action Buttons */}
                                     {order.status === 'pending' && (
-                                        <div className="flex gap-3">
-                                            <button onClick={() => updateStatus(order._id, 'accepted')}
-                                                className="flex-1 py-2.5 bg-green-500 text-white rounded-xl font-bold text-sm hover:bg-green-600 transition-all flex items-center justify-center gap-2">
-                                                <FaCheck size={12} /> Accept Order
-                                            </button>
-                                            <button onClick={() => updateStatus(order._id, 'rejected')}
-                                                className="flex-1 py-2.5 bg-red-500 text-white rounded-xl font-bold text-sm hover:bg-red-600 transition-all flex items-center justify-center gap-2">
-                                                <FaBan size={12} /> Reject Order
-                                            </button>
-                                        </div>
+                                        acceptingOrder === order._id ? (
+                                            <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex flex-col gap-3">
+                                                <p className="text-xs font-bold text-green-700 uppercase tracking-wider">Set Timings</p>
+                                                <div className="flex gap-3">
+                                                    <div className="flex-1">
+                                                        <label className="text-[10px] font-bold text-gray-500 uppercase mb-1 block">Prep (mins)</label>
+                                                        <input type="number" value={accPrepTime} onChange={e => setAccPrepTime(e.target.value)} className="w-full border border-green-200 rounded-lg p-2 text-sm font-bold bg-white outline-none" min="1" />
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <label className="text-[10px] font-bold text-gray-500 uppercase mb-1 block">Delivery (mins)</label>
+                                                        <input type="number" value={accDeliveryTime} onChange={e => setAccDeliveryTime(e.target.value)} className="w-full border border-green-200 rounded-lg p-2 text-sm font-bold bg-white outline-none" min="1" />
+                                                    </div>
+                                                </div>
+                                                <div className="flex gap-2 mt-1">
+                                                    <button onClick={() => { updateStatus(order._id, 'accepted', { prepTime: accPrepTime, deliveryTime: accDeliveryTime }); setAcceptingOrder(null); }} className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold text-xs py-2 rounded-lg transition-colors shadow-sm">Confirm</button>
+                                                    <button onClick={() => setAcceptingOrder(null)} className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold text-xs py-2 rounded-lg transition-colors">Cancel</button>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="flex gap-3">
+                                                <button onClick={() => { setAccPrepTime(20); setAccDeliveryTime(30); setAcceptingOrder(order._id); }}
+                                                    className="flex-1 py-2.5 bg-green-500 text-white rounded-xl font-bold text-sm hover:bg-green-600 transition-all flex items-center justify-center gap-2">
+                                                    <FaCheck size={12} /> Accept Order
+                                                </button>
+                                                <button onClick={() => updateStatus(order._id, 'rejected')}
+                                                    className="flex-1 py-2.5 bg-red-500 text-white rounded-xl font-bold text-sm hover:bg-red-600 transition-all flex items-center justify-center gap-2">
+                                                    <FaBan size={12} /> Reject Order
+                                                </button>
+                                            </div>
+                                        )
                                     )}
                                     {order.status === 'accepted' && (
                                         <button onClick={() => updateStatus(order._id, 'preparing')}

@@ -29,11 +29,13 @@ Owen Express is a production-ready MERN stack food delivery application built fo
 ### 👤 Customer
 - Email/password authentication with bcryptjs hashing
 - Google OAuth login via Firebase
+- Premium glassmorphic UI with dynamic styling aesthetics
 - Browse full menu with veg / non-veg toggle filter
 - 3D flip cards showing item ingredients
 - Search across menu items
 - Shopping cart with localStorage persistence
 - Order placement — UPI, Credit Card, or Cash on Delivery
+- High-fidelity Order Tracking Timeline strictly linked to live Admin acceptance constraints
 - Order history with star rating and review system
 - Fully responsive on all screen sizes
 
@@ -43,6 +45,8 @@ Owen Express is a production-ready MERN stack food delivery application built fo
 - Upload food images — stored permanently on Cloudinary
 - Mark items as Chef's Special
 - Veg / Non-veg classification
+- Dynamic Custom Order Timings: Configure explicit Prep and Delivery timeouts upon order acceptance
+- Strict Real-Time Data Enforcement: Zero mock fallbacks and hardened database constraints
 - Live stats — total items, veg count, non-veg count, specials count
 - Inline success/error feedback (no alerts)
 
