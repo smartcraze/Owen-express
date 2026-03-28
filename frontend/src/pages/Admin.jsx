@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaStar, FaEdit, FaTrash, FaPlus, FaLeaf, FaDrumstickBite, FaImage, FaTimes, FaUtensils, FaShoppingBag, FaCheck, FaBan, FaClock } from 'react-icons/fa';
+import { FaStar, FaEdit, FaTrash, FaPlus, FaLeaf, FaDrumstickBite, FaImage, FaTimes, FaUtensils, FaShoppingBag, FaCheck, FaBan, FaClock, FaMotorcycle } from 'react-icons/fa';
 import { API_URL } from '../config';
 
 const Admin = () => {
