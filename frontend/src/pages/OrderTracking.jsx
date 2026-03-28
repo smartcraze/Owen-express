@@ -36,8 +36,19 @@ const OrderTracking = () => {
                 if (data.status) {
                     setRealStatus(data.status);
                     if (STATUS_TO_STAGE[data.status] !== undefined) setStage(STATUS_TO_STAGE[data.status]);
-                    if (data.prepTime || data.deliveryTime) {
-                        setEta(prev => prev > (data.prepTime + data.deliveryTime) ? (data.prepTime + data.deliveryTime) : prev);
+                    
+                    const calcRemaining = (startTimeStr, totalMinutes) => {
+                        if (!startTimeStr || !totalMinutes) return totalMinutes || 0;
+                        const elapsedMs = new Date() - new Date(startTimeStr);
+                        return Math.max(0, totalMinutes - Math.floor(elapsedMs / 60000));
+                    };
+
+                    if (data.status === 'accepted' || data.status === 'preparing') {
+                        setEta(calcRemaining(data.acceptedAt, data.prepTime || 15));
+                    } else if (data.status === 'out_for_delivery') {
+                        setEta(calcRemaining(data.outForDeliveryAt, data.deliveryTime || 30));
+                    } else if (data.status === 'delivered') {
+                        setEta(0);
                     }
                 }
             } catch { }

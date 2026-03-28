@@ -40,11 +40,12 @@ exports.updateOrderStatus = async (req, res) => {
         if (!validStatuses.includes(status)) return res.status(400).json({ error: 'Invalid status' });
         
         const updateData = { status };
-        if (status === 'accepted') {
-            if (prepTime !== undefined) updateData.prepTime = Number(prepTime);
-            if (deliveryTime !== undefined) updateData.deliveryTime = Number(deliveryTime);
-        }
+        if (prepTime) updateData.prepTime = prepTime;
+        if (deliveryTime) updateData.deliveryTime = deliveryTime;
         
+        if (status === 'accepted') updateData.acceptedAt = new Date();
+        if (status === 'out_for_delivery') updateData.outForDeliveryAt = new Date();
+
         const order = await Order.findByIdAndUpdate(req.params.id, updateData, { new: true });
         if (!order) return res.status(404).json({ error: 'Order not found' });
         res.json({ message: 'Status updated', order });
@@ -55,9 +56,9 @@ exports.updateOrderStatus = async (req, res) => {
 
 exports.getOrderStatus = async (req, res) => {
     try {
-        const order = await Order.findById(req.params.id).select('status');
+        const order = await Order.findById(req.params.id).select('status prepTime deliveryTime acceptedAt outForDeliveryAt');
         if (!order) return res.status(404).json({ error: 'Order not found' });
-        res.json({ status: order.status });
+        res.json(order);
     } catch {
         res.status(500).json({ error: 'Failed to fetch status' });
     }
