@@ -478,7 +478,7 @@ const Admin = () => {
                                     {order.status === 'preparing' && (
                                         <button onClick={() => updateStatus(order._id, 'out_for_delivery')}
                                             className="w-full py-2.5 bg-purple-500 text-white rounded-xl font-bold text-sm hover:bg-purple-600 transition-all flex items-center justify-center gap-2">
-                                            🏍️ Mark Out for Delivery
+                                            <FaMotorcycle size={14} /> Mark Out for Delivery
                                         </button>
                                     )}
                                     {order.status === 'out_for_delivery' && (

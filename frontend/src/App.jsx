@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
-import { FaShoppingCart, FaSearch, FaUtensils, FaEnvelope, FaPhone, FaBars, FaTimes } from 'react-icons/fa';
+import { FaShoppingCart, FaSearch, FaUtensils, FaEnvelope, FaPhone, FaBars, FaTimes, FaHome, FaBoxOpen, FaMapMarkerAlt, FaKey } from 'react-icons/fa';
 import { API_URL } from './config';
 import Home from './pages/Home';
 import Showcase from './pages/Showcase';
@@ -89,18 +89,18 @@ function Header({ cartCount, isLoggedIn, onLogout, userName }) {
                 <div className="md:hidden absolute top-[calc(100%+10px)] left-4 right-4 bg-white/95 backdrop-blur-xl border border-white rounded-[2rem] shadow-[0_20px_40px_rgba(0,0,0,0.1)] p-4 flex flex-col gap-2 z-50 animate-fadeIn">
                     {isLoggedIn ? (
                         <>
-                            <button className="text-left px-5 py-4 rounded-xl text-gray-800 font-bold hover:bg-red-50 hover:text-red-600 transition-all flex items-center gap-3" onClick={() => go('/')}><span className="text-gray-400">🏠</span> Home</button>
-                            <button className="text-left px-5 py-4 rounded-xl text-gray-800 font-bold hover:bg-red-50 hover:text-red-600 transition-all flex items-center gap-3" onClick={() => go('/menu')}><span className="text-gray-400">🍽️</span> Menu</button>
-                            <button className="text-left px-5 py-4 rounded-xl text-gray-800 font-bold hover:bg-red-50 hover:text-red-600 transition-all flex items-center gap-3" onClick={() => go('/orders')}><span className="text-gray-400">📦</span> My Orders</button>
-                            <button className="text-left px-5 py-4 rounded-xl text-gray-800 font-bold hover:bg-red-50 hover:text-red-600 transition-all flex items-center gap-3" onClick={() => go('/track')}><span className="text-gray-400">📍</span> Track Order</button>
-                            <button className="text-left px-5 py-4 rounded-xl text-gray-800 font-bold hover:bg-red-50 hover:text-red-600 transition-all flex items-center gap-3" onClick={() => go('/search')}><span className="text-gray-400">🔍</span> Search</button>
+                            <button className="text-left px-5 py-4 rounded-xl text-gray-800 font-bold hover:bg-red-50 hover:text-red-600 transition-all flex items-center gap-3" onClick={() => go('/')}><span className="text-gray-400"><FaHome /></span> Home</button>
+                            <button className="text-left px-5 py-4 rounded-xl text-gray-800 font-bold hover:bg-red-50 hover:text-red-600 transition-all flex items-center gap-3" onClick={() => go('/menu')}><span className="text-gray-400"><FaUtensils /></span> Menu</button>
+                            <button className="text-left px-5 py-4 rounded-xl text-gray-800 font-bold hover:bg-red-50 hover:text-red-600 transition-all flex items-center gap-3" onClick={() => go('/orders')}><span className="text-gray-400"><FaBoxOpen /></span> My Orders</button>
+                            <button className="text-left px-5 py-4 rounded-xl text-gray-800 font-bold hover:bg-red-50 hover:text-red-600 transition-all flex items-center gap-3" onClick={() => go('/track')}><span className="text-gray-400"><FaMapMarkerAlt /></span> Track Order</button>
+                            <button className="text-left px-5 py-4 rounded-xl text-gray-800 font-bold hover:bg-red-50 hover:text-red-600 transition-all flex items-center gap-3" onClick={() => go('/search')}><span className="text-gray-400"><FaSearch /></span> Search</button>
                             <div className="h-[1px] bg-gray-100 my-2"></div>
                             <button className="mt-2 px-5 py-4 text-center font-black text-red-600 bg-red-50 border border-red-100 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm" onClick={() => { onLogout(); setMenuOpen(false); }}>Logout</button>
                         </>
                     ) : (
                         <>
-                            <button className="text-left px-5 py-4 rounded-xl text-gray-800 font-bold hover:bg-red-50 hover:text-red-600 transition-all flex items-center gap-3" onClick={() => go('/')}><span className="text-gray-400">🏠</span> Home</button>
-                            <button className="text-left px-5 py-4 rounded-xl text-gray-800 font-bold hover:bg-red-50 hover:text-red-600 transition-all flex items-center gap-3" onClick={() => go('/login')}><span className="text-gray-400">🔑</span> Login</button>
+                            <button className="text-left px-5 py-4 rounded-xl text-gray-800 font-bold hover:bg-red-50 hover:text-red-600 transition-all flex items-center gap-3" onClick={() => go('/')}><span className="text-gray-400"><FaHome /></span> Home</button>
+                            <button className="text-left px-5 py-4 rounded-xl text-gray-800 font-bold hover:bg-red-50 hover:text-red-600 transition-all flex items-center gap-3" onClick={() => go('/login')}><span className="text-gray-400"><FaKey /></span> Login</button>
                             <button className="mt-2 px-5 py-4 text-center font-black bg-gradient-to-r from-red-600 to-orange-500 text-white rounded-xl hover:shadow-lg hover:-translate-y-0.5 transition-all" onClick={() => go('/signup')}>Sign Up</button>
                         </>
                     )}

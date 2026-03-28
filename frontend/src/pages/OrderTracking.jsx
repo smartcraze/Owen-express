@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { FaClipboardCheck, FaUtensils, FaMotorcycle, FaHome, FaPhone, FaMapMarkerAlt, FaStar } from 'react-icons/fa';
+import { FaClipboardCheck, FaUtensils, FaMotorcycle, FaHome, FaPhone, FaMapMarkerAlt, FaStar, FaFrown, FaHourglassHalf, FaBoxOpen } from 'react-icons/fa';
 import { API_URL } from '../config';
 
 const STAGES = [
@@ -62,7 +62,7 @@ const OrderTracking = () => {
 
     if (realStatus === 'rejected') return (
         <div className="max-w-2xl mx-auto py-16 px-4 text-center">
-            <div className="text-6xl mb-4">😞</div>
+            <FaFrown className="text-6xl mb-4 mx-auto text-red-500/80 drop-shadow-md" />
             <h2 className="text-2xl font-black text-red-600 mb-2">Order Rejected</h2>
             <p className="text-gray-500 mb-6">Sorry, the restaurant couldn't accept your order at this time.</p>
             <button onClick={() => { localStorage.removeItem('activeOrder'); navigate('/menu'); }}
@@ -74,7 +74,7 @@ const OrderTracking = () => {
 
     if (orderId && realStatus === 'pending') return (
         <div className="max-w-2xl mx-auto py-16 px-4 text-center">
-            <div className="text-6xl mb-4 animate-pulse">⏳</div>
+            <FaHourglassHalf className="text-6xl mb-4 mx-auto text-yellow-500/80 drop-shadow-md animate-pulse" />
             <h2 className="text-2xl font-black text-yellow-600 mb-2">Waiting for Confirmation</h2>
             <p className="text-gray-500 mb-2">Your order has been placed and is waiting for restaurant approval.</p>
             <p className="text-xs text-gray-400">This page will update automatically...</p>
@@ -83,7 +83,7 @@ const OrderTracking = () => {
 
     if (!hasOrder) return (
         <div className="max-w-2xl mx-auto py-16 px-4 text-center">
-            <div className="text-6xl mb-4">📦</div>
+            <FaBoxOpen className="text-6xl mb-4 mx-auto text-gray-400 drop-shadow-md" />
             <h2 className="text-2xl font-black text-gray-800 mb-2">No Active Order</h2>
             <p className="text-gray-500 mb-6">You haven't placed any order yet. Browse our menu and place an order!</p>
             <button onClick={() => navigate('/menu')}
