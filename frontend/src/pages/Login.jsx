@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaEnvelope, FaLock, FaSignInAlt } from 'react-icons/fa';
+import { FaEnvelope, FaLock, FaUtensils } from 'react-icons/fa';
 import { API_URL } from '../config';
 import { signInWithGoogle } from '../firebase';
 
@@ -79,11 +79,11 @@ const Login = ({ setIsLoggedIn }) => {
                 <div className="absolute inset-0 bg-gradient-to-b from-white/40 to-transparent rounded-[2.5rem] pointer-events-none"></div>
                 
                 <div className="text-center mb-10 relative z-20">
-                    <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-red-600 to-orange-500 rounded-3xl mb-6 shadow-lg shadow-red-500/30 transform group-hover:scale-105 group-hover:rotate-3 transition-all duration-300">
-                        <FaSignInAlt className="text-white text-3xl drop-shadow-md" />
+                    <div className="inline-flex items-center justify-center w-20 h-20 bg-red-600 rounded-3xl mb-6 shadow-lg shadow-red-500/30 transform group-hover:scale-105 transition-all duration-300">
+                        <FaUtensils className="text-white text-3xl drop-shadow-md" />
                     </div>
-                    <h2 className="text-4xl font-black tracking-tight"><span className="text-gray-900">Welcome</span> <br/><span className="bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-orange-500">Back</span></h2>
-                    <p className="text-gray-500 font-medium mt-3">Login to continue your food journey</p>
+                    <h2 className="text-4xl font-black tracking-tight"><span className="text-gray-900">Owen</span> <span className="bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-orange-500">Express</span></h2>
+                    <p className="text-gray-500 font-medium mt-3">Admin & User Authentication</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-5 relative z-20">

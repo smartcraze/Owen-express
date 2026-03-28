@@ -33,14 +33,17 @@ const Admin = () => {
         if (!user || !user.isAdmin) { navigate('/'); return; }
         fetchItems();
         fetchOrders();
+
+        const interval = setInterval(() => fetchOrders(true), 7000);
+        return () => clearInterval(interval);
     }, [navigate]);
 
-    const fetchOrders = () => {
-        setOrdersLoading(true);
+    const fetchOrders = (silent = false) => {
+        if (!silent) setOrdersLoading(true);
         fetch(`${API_URL}/api/orders/all`)
             .then(res => res.json())
-            .then(data => { setOrders(Array.isArray(data) ? data : []); setOrdersLoading(false); })
-            .catch(() => setOrdersLoading(false));
+            .then(data => { setOrders(Array.isArray(data) ? data : []); if (!silent) setOrdersLoading(false); })
+            .catch(() => { if (!silent) setOrdersLoading(false); });
     };
 
     const updateStatus = async (id, status, extra = {}) => {
