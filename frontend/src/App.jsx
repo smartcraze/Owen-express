@@ -54,12 +54,14 @@ function Header({ cartCount, isLoggedIn, onLogout, userName, isAdmin }) {
                                 </>
                             )}
                             <button className="relative bg-transparent border-none text-sm font-bold text-gray-600 cursor-pointer px-5 py-2.5 rounded-xl hover:text-red-600 hover:bg-red-50/50 hover:backdrop-blur-md hover:shadow-sm transition-all duration-200" onClick={() => go('/search')}><FaSearch className="text-base" /></button>
-                            <button className="relative bg-white border border-gray-100 shadow-sm text-sm font-bold text-gray-900 cursor-pointer px-5 py-2.5 rounded-xl hover:text-red-600 hover:shadow-md hover:-translate-y-0.5 transition-all flex items-center gap-2 group ml-2" onClick={() => go('/order-summary')}>
-                                {cartCount > 0 && (
-                                    <span className="absolute -top-2 -right-2 bg-gradient-to-r from-red-600 to-orange-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-black shadow-md z-20 group-hover:scale-110 transition-transform">{cartCount}</span>
-                                )}
-                                <FaShoppingCart className="text-base group-hover:text-red-500 transition-colors" /> Cart
-                            </button>
+                            {!isAdmin && (
+                                <button className="relative bg-white border border-gray-100 shadow-sm text-sm font-bold text-gray-900 cursor-pointer px-5 py-2.5 rounded-xl hover:text-red-600 hover:shadow-md hover:-translate-y-0.5 transition-all flex items-center gap-2 group ml-2" onClick={() => go('/order-summary')}>
+                                    {cartCount > 0 && (
+                                        <span className="absolute -top-2 -right-2 bg-gradient-to-r from-red-600 to-orange-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-black shadow-md z-20 group-hover:scale-110 transition-transform">{cartCount}</span>
+                                    )}
+                                    <FaShoppingCart className="text-base group-hover:text-red-500 transition-colors" /> Cart
+                                </button>
+                            )}
                             {userName && <div className="h-6 w-[1px] bg-gray-200 mx-2"></div>}
                             {userName && <span className="text-sm font-bold text-gray-500 px-3 bg-gray-50/50 py-2 rounded-xl border border-gray-100 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-green-400"></span>{userName}</span>}
                             <button className="ml-2 px-6 py-2.5 text-sm font-bold text-red-600 bg-red-50 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm border border-red-100" onClick={onLogout}>Logout</button>
@@ -76,7 +78,7 @@ function Header({ cartCount, isLoggedIn, onLogout, userName, isAdmin }) {
 
                 {/* Mobile right side */}
                 <div className="flex md:hidden items-center gap-3">
-                    {isLoggedIn && (
+                    {isLoggedIn && !isAdmin && (
                         <button className="relative p-3 bg-white border border-gray-100 rounded-xl shadow-sm text-gray-800" onClick={() => go('/order-summary')}>
                             {cartCount > 0 && (
                                 <span className="absolute -top-2 -right-2 bg-gradient-to-r from-red-600 to-orange-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-black shadow-md">{cartCount}</span>
