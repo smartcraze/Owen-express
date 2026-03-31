@@ -9,4 +9,4 @@ jobs:
     steps:
       - name: Ping Render App
         run: |
-          curl -X GET https://your-app.onrender.com/health
+          curl -X GET https://owen-express-backend.onrender.com/health
